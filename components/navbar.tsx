@@ -7,44 +7,196 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { NotebookText } from "lucide-react";
+import { Menu, NotebookText, X } from "lucide-react";
 import { Button } from "./ui/button";
+import Link from "next/link";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <NotebookText className="h-6 w-6 sm:h-8 sm:w-8 text-[#008170]" />
-          <span className="text-xl sm:text-2xl font-bold text-black/80">
-            Task Management
-          </span>
-        </div>
-        <div className="flex items-center">
-          <div>
+    <nav
+      className="
+        fixed top-0 left-0 right-0 w-full z-50
+        py-4
+        bg-white/80 backdrop-blur-lg
+        border-b border-black/10
+        transition-all duration-300
+      "
+      style={{ transform: "translate3d(0,0,0)" }}
+    >
+      <div className="max-w-7xl mx-auto px-5">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <NotebookText className="w-6 h-6 text-[#008170]" />
+
+            <span className="text-l font-bold text-black/80 hover:text-black transition-colors">
+              ZC-TASK
+            </span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-4">
             <SignedOut>
               <SignInButton>
-                <Button
-                  variant={"ghost"}
-                  size={"sm"}
-                  className="text-sm sm:text-base"
+                <button
+                  className="
+                    px-4 py-2
+                    text-sm font-medium
+                    text-black/70 hover:text-black
+                    transition-colors
+                  "
                 >
                   Sign In
-                </Button>
+                </button>
               </SignInButton>
+
               <SignUpButton>
-                <Button className="bg-[#008170] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                <Button
+                  className="
+                    px-4 py-2
+                    rounded-full
+                    bg-[#008170]
+                    hover:bg-[#006d5f]
+                    text-white
+                    text-sm font-medium
+                    transition-all
+                  "
+                >
                   Sign Up
                 </Button>
               </SignUpButton>
             </SignedOut>
+
             <SignedIn>
-              <UserButton />
+              <Link href="/dashboard">
+                <Button
+                  className="
+                    flex items-center gap-2
+                    px-4 py-2
+                    rounded-full
+                    bg-[#008170]
+                    hover:bg-[#006d5f]
+                    text-white
+                    text-sm font-medium
+                    transition-all
+                  "
+                >
+                  Dashboard
+                </Button>
+              </Link>
+
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "h-9 w-9",
+                  },
+                }}
+              />
             </SignedIn>
+          </div>
+
+          <div className="flex items-center gap-2 md:hidden">
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "h-9 w-9",
+                  },
+                }}
+              />
+            </SignedIn>
+
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+              aria-label="menu"
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6 text-black/80" />
+              ) : (
+                <Menu className="w-6 h-6 text-black/80" />
+              )}
+            </button>
           </div>
         </div>
       </div>
-    </header>
+
+      <div
+        className={`
+          md:hidden
+          overflow-hidden
+          transition-all duration-300
+          ${isMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"}
+        `}
+      >
+        <div className="bg-white border-t border-black/10 px-5 py-4 space-y-2">
+          <SignedOut>
+            <SignInButton>
+              <Button
+                onClick={() => setIsMenuOpen(false)}
+                className="
+                  flex items-center gap-3
+                  w-full px-3 py-3
+                  rounded-lg
+                  hover:bg-black/5
+                  transition-colors
+                "
+              >
+                Sign In
+              </Button>
+            </SignInButton>
+
+            <SignUpButton>
+              <Button
+                onClick={() => setIsMenuOpen(false)}
+                className="
+                  flex items-center gap-3
+                  w-full px-3 py-3
+                  rounded-lg
+                  hover:bg-black/5
+                  transition-colors
+                "
+              >
+                Sign Up
+              </Button>
+            </SignUpButton>
+          </SignedOut>
+
+          <SignedIn>
+            <Link
+              href="/"
+              onClick={() => setIsMenuOpen(false)}
+              className="
+                flex items-center gap-3
+                px-3 py-3
+                rounded-lg
+                hover:bg-[#008170]/10
+                hover:text-[#008170]
+                transition-colors
+              "
+            >
+              Home
+            </Link>
+            <Link
+              href="/dashboard"
+              onClick={() => setIsMenuOpen(false)}
+              className="
+                flex items-center gap-3
+                px-3 py-3
+                rounded-lg
+                hover:bg-[#008170]/10
+                hover:text-[#008170]
+                transition-colors
+              "
+            >
+              Dashboard
+            </Link>
+          </SignedIn>
+        </div>
+      </div>
+    </nav>
   );
 }
 
