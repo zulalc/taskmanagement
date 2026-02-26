@@ -9,6 +9,7 @@ import {
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -30,14 +31,16 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${montserrat.className}`}>
-          <Navbar />
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          <main>{children}</main>
+          <SupabaseProvider>
+            <Navbar />
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <main>{children}</main>
+          </SupabaseProvider>
         </body>
       </html>
     </ClerkProvider>
