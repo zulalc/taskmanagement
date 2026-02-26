@@ -79,6 +79,7 @@ function Navbar() {
                     text-white
                     text-sm font-medium
                     transition-all
+                    cursor-pointer
                   "
                 >
                   Dashboard
