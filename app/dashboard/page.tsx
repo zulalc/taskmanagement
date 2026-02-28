@@ -243,7 +243,51 @@ function Page() {
             </Card>
           </div>
         ) : (
-          <div></div>
+          <div>
+            {boards.map((board, key) => (
+              <div key={key} className={key > 0 ? "mt-4" : ""}>
+                <Link href={`/boards/${board.id}`}>
+                  <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div className={`w-4 h-4 ${board.color} rounded`} />
+                        <Badge className="text-xs" variant={"secondary"}>
+                          New
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 sm:p-6">
+                      <CardTitle className="text-base sm:text-lg mb-2 group-hover:text-[#008170] transition-colors">
+                        {board.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm mb-4">
+                        {board.description}
+                      </CardDescription>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs text-zinc-500 space-y-1 sm:space-y-0">
+                        <span>
+                          Created{" "}
+                          {new Date(board.created_at).toLocaleDateString()}
+                        </span>
+                        <span>
+                          Updated{" "}
+                          {new Date(board.updated_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            ))}
+
+            <Card className="mt-4 border-2 border-dashed border-zinc-300 hover:border-[#008170] cursor-pointer transition-colors group">
+              <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full min-h-50">
+                <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-400 group-hover:text-[#008170]  mb-2" />
+                <p className="text-sm sm:text-base text-zinc-600 group-hover:text-[#008170] font-medium">
+                  Create New Board
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </main>
     </div>
