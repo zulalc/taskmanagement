@@ -2,6 +2,21 @@ import { Board, Stage } from "./supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const boardService = {
+  async getBoard(
+    supabase: SupabaseClient,
+    boardId: string,
+  ): Promise<Board | null> {
+    const { data, error } = await supabase
+      .from("boards")
+      .select("*")
+      .eq("id", boardId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  },
+
   async getBoards(supabase: SupabaseClient, userId: string): Promise<Board[]> {
     const { data, error } = await supabase
       .from("boards")
@@ -31,6 +46,18 @@ export const boardService = {
 };
 
 export const stageService = {
+  async getStages(supabase: SupabaseClient, boardId: string): Promise<Stage[]> {
+    const { data, error } = await supabase
+      .from("stages")
+      .select("*")
+      .eq("board_id", boardId)
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+
+    return data || [];
+  },
+
   async createStage(
     supabase: SupabaseClient,
     stage: Omit<Stage, "id" | "created_at">,
@@ -48,6 +75,20 @@ export const stageService = {
 };
 
 export const boardDataServices = {
+  async getBoardWithStages(supabase: SupabaseClient, boardId: string) {
+    const [board, stages] = await Promise.all([
+      boardService.getBoard(supabase, boardId),
+      stageService.getStages(supabase, boardId),
+    ]);
+
+    if (!board) throw new Error("Board not found");
+
+    return {
+      board,
+      stages,
+    };
+  },
+
   async createBoardWithDefaultStages(
     supabase: SupabaseClient,
     boardData: {
