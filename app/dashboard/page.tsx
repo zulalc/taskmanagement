@@ -205,16 +205,26 @@ function Page() {
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <div className={`w-4 h-4 ${board.color} rounded`} />
+                      <div
+                        className="w-4 h-4 rounded"
+                        style={{ backgroundColor: board.color }}
+                      />
                       <Badge className="text-xs" variant={"secondary"}>
                         New
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6">
-                    <CardTitle className="text-base sm:text-lg mb-2 group-hover:text-[#008170] transition-colors">
-                      {board.title}
-                    </CardTitle>
+                    <div
+                      style={
+                        { "--board-color": board.color } as React.CSSProperties
+                      }
+                      className="group"
+                    >
+                      <CardTitle className="text-base sm:text-lg mb-2 transition-colors group-hover:text-(--board-color)">
+                        {board.title}
+                      </CardTitle>
+                    </div>
                     <CardDescription className="text-sm mb-4">
                       {board.description}
                     </CardDescription>
@@ -250,16 +260,28 @@ function Page() {
                   <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <div className={`w-4 h-4 ${board.color} rounded`} />
+                        <div
+                          className="w-4 h-4 rounded"
+                          style={{ backgroundColor: board.color }}
+                        />
                         <Badge className="text-xs" variant={"secondary"}>
                           New
                         </Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="p-4 sm:p-6">
-                      <CardTitle className="text-base sm:text-lg mb-2 group-hover:text-[#008170] transition-colors">
-                        {board.title}
-                      </CardTitle>
+                      <div
+                        style={
+                          {
+                            "--board-color": board.color,
+                          } as React.CSSProperties
+                        }
+                        className="group"
+                      >
+                        <CardTitle className="text-base sm:text-lg mb-2 transition-colors group-hover:text-(--board-color)">
+                          {board.title}
+                        </CardTitle>
+                      </div>
                       <CardDescription className="text-sm mb-4">
                         {board.description}
                       </CardDescription>
