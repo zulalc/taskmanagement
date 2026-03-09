@@ -17,6 +17,8 @@ export interface Stage {
   user_id: string;
 }
 
+export type StageWithTasks = Stage & { tasks: Task[] };
+
 export interface Task {
   id: string;
   stage_id: string;

@@ -1,4 +1,4 @@
-import { Board, Stage } from "./supabase/models";
+import { Board, Stage, Task } from "./supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const boardService = {
@@ -91,6 +91,28 @@ export const stageService = {
   },
 };
 
+export const taskService = {
+  async getTasksByBoard(
+    supabase: SupabaseClient,
+    boardId: string,
+  ): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select(
+        `
+        *,
+        stages!inner(board_id)
+        `,
+      )
+      .eq("stages.board_id", boardId)
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+
+    return data || [];
+  },
+};
+
 export const boardDataServices = {
   async getBoardWithStages(supabase: SupabaseClient, boardId: string) {
     const [board, stages] = await Promise.all([
@@ -100,9 +122,16 @@ export const boardDataServices = {
 
     if (!board) throw new Error("Board not found");
 
+    const tasks = await taskService.getTasksByBoard(supabase, boardId);
+
+    const stagesWithTasks = stages.map((stage) => ({
+      ...stage,
+      tasks: tasks.filter((task) => task.stage_id === stage.id),
+    }));
+
     return {
       board,
-      stages,
+      stagesWithTasks,
     };
   },
 
