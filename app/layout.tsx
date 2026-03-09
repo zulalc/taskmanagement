@@ -10,6 +10,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
+import ScrollToTop from "@/components/scrollToTop";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -39,7 +40,9 @@ export default function RootLayout({
             <SignedIn>
               <UserButton />
             </SignedIn>
-            <main>{children}</main>
+            <main className="pt-5 bg-zinc-50 min-h-screen">
+              <ScrollToTop>{children}</ScrollToTop>
+            </main>
           </SupabaseProvider>
         </body>
       </html>
