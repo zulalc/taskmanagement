@@ -1,8 +1,8 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import { boardDataServices, boardService } from "../services";
+import { boardDataServices, boardService, taskService } from "../services";
 import { useEffect, useState } from "react";
-import { Board, Stage, StageWithTasks } from "../supabase/models";
+import { Board, Stage, StageWithTasks, taskData } from "../supabase/models";
 import { useSupabase } from "../supabase/SupabaseProvider";
 
 export function useBoards() {
@@ -110,5 +110,35 @@ export function useBoard(boardId: string) {
     }
   }
 
-  return { board, stages, loading, error, updateBoard };
+  async function createTaskHook(stageId: string, taskData: taskData) {
+    try {
+      const newTask = await taskService.createTask(supabase!, {
+        stage_id: stageId,
+        title: taskData.title,
+        description: taskData.description || null,
+        assignee: taskData.assignee || null,
+        due_date: taskData.dueDate || null,
+        sort_order: stages.find((s) => s.id === stageId)?.tasks.length || 0,
+        priority:
+          (taskData.priority.toLowerCase() as "low" | "medium" | "high") ||
+          "medium",
+      });
+
+      //new task add end of the list
+      setStages((prev) =>
+        prev.map((stage) =>
+          stage.id === stageId //find correct stage
+            ? { ...stage, tasks: [...stage.tasks, newTask] }
+            : stage,
+        ),
+      );
+      return newTask;
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to create task.",
+      );
+    }
+  }
+
+  return { board, stages, loading, error, updateBoard, createTaskHook };
 }
