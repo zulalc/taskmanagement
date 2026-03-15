@@ -1,21 +1,21 @@
 "use client";
 
+import AddTask from "@/components/board/AddTask";
+import EditBoard from "@/components/board/EditBoard";
+import FilterTasks from "@/components/board/FilterTasks";
+import Stage from "@/components/board/Stage";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import ColorPanel from "@/components/color/colorPanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useBoard } from "@/lib/hooks/useBoards";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import { Filter, MoreHorizontal } from "lucide-react";
+import { taskData } from "@/lib/supabase/models";
+import { Filter, MoreHorizontal, Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
 export default function BoardPage() {
   const { id } = useParams() as { id: string };
-  const { board, updateBoard, stages } = useBoard(id);
+  const { board, updateBoard, stages, createTaskHook } = useBoard(id);
 
   const [isEditingBoard, setIsEditingBoard] = useState(false);
   const [newColor, setNewColor] = useState("");
@@ -34,7 +34,7 @@ export default function BoardPage() {
     setIsEditingBoard(true);
   };
 
-  async function handleUpdateBoard(e: React.SubmitEvent) {
+  async function handleUpdateBoard(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!newTitle.trim() || !board) return;
 
@@ -49,10 +49,41 @@ export default function BoardPage() {
     }
   }
 
+  async function createTask(taskData: taskData) {
+    const targetStage = stages[0]; // add the task to the first stage
+    if (!targetStage) {
+      throw new Error("No stages available to add the task");
+    }
+
+    await createTaskHook(targetStage.id, taskData);
+  }
+
+  async function handleCreateTask(e: any) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const taskData = {
+      title: formData.get("title") as string,
+      description: (formData.get("description") as string) || undefined,
+      assignee: (formData.get("assignee") as string) || undefined,
+      priority:
+        (formData.get("priority") as "Low" | "Medium" | "High") || "Medium",
+      dueDate: (formData.get("dueDate") as string) || undefined,
+    };
+
+    if (taskData.title.trim()) {
+      await createTask(taskData);
+
+      const trigger = document.querySelector(
+        '[data-state="open"]',
+      ) as HTMLElement;
+      trigger?.click();
+    }
+  }
+
   return (
     <div className="min-h-screen bg-zinc-50">
       <main className="max-w-7xl mx-auto px-5 py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8 flex items-center justify-between">
+        <div className="mb-6 sm:mb-8 flex flex-wrap items-center justify-between gap-2">
           <BreadCrumbs name={board?.title || "Board"} />
           <div className="flex items-center gap-1">
             <Button
@@ -80,109 +111,20 @@ export default function BoardPage() {
           </div>
         </div>
 
-        <Dialog open={isEditingBoard} onOpenChange={setIsEditingBoard}>
-          <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Board</DialogTitle>
-            </DialogHeader>
+        <EditBoard
+          isEditingBoard={isEditingBoard}
+          setIsEditingBoard={setIsEditingBoard}
+          newTitle={newTitle}
+          setNewTitle={setNewTitle}
+          newColor={newColor}
+          setNewColor={setNewColor}
+          handleUpdateBoard={handleUpdateBoard}
+        />
 
-            <form className="space-y-4" onSubmit={handleUpdateBoard}>
-              <div className="space-y-2">
-                <Label htmlFor="boardTitle" className="mb-4">
-                  Board Title
-                </Label>
-                <Input
-                  id="boardTitle"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Enter board title"
-                  required
-                />
-              </div>
-              <div>
-                <Label className="mb-4">Board Color</Label>
-                <ColorPanel value={newColor} onChange={setNewColor} />
-              </div>
-
-              <div className="flex justify-end space-x-2">
-                <Button
-                  type="button"
-                  variant={"outline"}
-                  className="cursor-pointer"
-                  onClick={() => setIsEditingBoard(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="cursor-pointer">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isFiltering} onOpenChange={setIsFiltering}>
-          <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
-            <DialogHeader>
-              <DialogTitle>Filter Tasks</DialogTitle>
-              <p className="text-sm text-zinc-600">
-                Filter tasks by priority, assignee, or due date
-              </p>
-            </DialogHeader>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Priority</Label>
-                <div className="flex flex-wrap gap-2">
-                  {["High", "Medium", "Low"].map((priority, key) => (
-                    <Button
-                      key={key}
-                      variant={"outline"}
-                      size={"sm"}
-                      className="cursor-pointer"
-                    >
-                      {priority}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/*<div className="space-y-2">
-                <Label>Assignee</Label>
-                <div className="flex flex-wrap gap-2">
-                  {["High", "Medium", "Low"].map((priority, key) => (
-                    <Button key={key} variant={"outline"} size={"sm"}>
-                      {priority}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            */}
-
-              <div className="space-y-2">
-                <Label>Due Date</Label>
-                <Input type="date" className="cursor-pointer" />
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <Button
-                  type="button"
-                  variant={"outline"}
-                  className="cursor-pointer"
-                >
-                  Clear Filters
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => setIsFiltering(false)}
-                  className="cursor-pointer"
-                >
-                  Apply Filters
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <FilterTasks
+          isFiltering={isFiltering}
+          setIsFiltering={setIsFiltering}
+        />
 
         {/*Board Content*/}
         <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
@@ -193,6 +135,30 @@ export default function BoardPage() {
                 {stages.reduce((total, stage) => total + stage.tasks.length, 0)}
               </div>
             </div>
+
+            {/*Add Task Dialog*/}
+            <AddTask handleCreateTask={handleCreateTask} />
+          </div>
+
+          <div
+            className="flex flex-col lg:flex-row lg:space-x-6 lg:overflow-x-auto 
+          lg:pb-6 lg:px-2 lg:mx-2
+          "
+          >
+            {stages.map((stage, key) => (
+              <Stage
+                key={key}
+                stage={stage}
+                onCreateTask={createTask}
+                onEditStage={() => {}}
+              >
+                <div className="space-y-3">
+                  {stage.tasks.map((task, key) => (
+                    <div className="">{task.title}</div>
+                  ))}
+                </div>
+              </Stage>
+            ))}
           </div>
         </main>
       </main>
