@@ -4,6 +4,7 @@ import AddTask from "@/components/board/AddTask";
 import EditBoard from "@/components/board/EditBoard";
 import FilterTasks from "@/components/board/FilterTasks";
 import Stage from "@/components/board/Stage";
+import TaskCard from "@/components/board/TaskCard";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -142,7 +143,11 @@ export default function BoardPage() {
 
           <div
             className="flex flex-col lg:flex-row lg:space-x-6 lg:overflow-x-auto 
-          lg:pb-6 lg:px-2 lg:mx-2
+          lg:pb-6 lg:px-2 lg:mx-2 lg:[&::-webkit-scrollbar]:h-2
+          lg:[&::-webkit-scrollbar-track]:bg-zinc-100
+          lg:[&::-webkit-scrollbar-thumb]:bg-zinc-300
+          lg:[&::-webkit-scrollbar-thumb]:rounded-full
+          space-y-4 lg:space-y-0
           "
           >
             {stages.map((stage, key) => (
@@ -154,7 +159,7 @@ export default function BoardPage() {
               >
                 <div className="space-y-3">
                   {stage.tasks.map((task, key) => (
-                    <div className="">{task.title}</div>
+                    <TaskCard key={key} task={task} />
                   ))}
                 </div>
               </Stage>
