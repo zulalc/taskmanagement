@@ -1,3 +1,4 @@
+"use client";
 import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -17,19 +18,51 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useState } from "react";
+import { taskData } from "@/lib/supabase/models";
 
 export const priorityOptions = ["High", "Medium", "Low"];
+
 function AddTask({
-  handleCreateTask,
+  onSubmit,
+  buttonVariant,
 }: {
-  handleCreateTask: (e: React.SubmitEvent<HTMLFormElement>) => void;
+  onSubmit: (data: taskData) => Promise<void>;
+  buttonVariant?: "ghost" | "default";
 }) {
+  const [open, setOpen] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const taskData: taskData = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      assignee: formData.get("assignee") as string,
+      priority:
+        (formData.get("priority") as "Low" | "Medium" | "High") || "Medium",
+      due_date: formData.get("due_date") as string,
+    };
+
+    await onSubmit(taskData);
+    setOpen(false);
+  };
+
   return (
     <div>
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full sm:w-auto cursor-pointer">
-            <Plus /> Add Task
+          <Button
+            variant={buttonVariant}
+            className={
+              buttonVariant === "ghost"
+                ? "w-full mt-3 text-zinc-500 hover:text-gray-700 cursor-pointer"
+                : "w-full sm:w-auto cursor-pointer"
+            }
+          >
+            <Plus />
+            {buttonVariant !== "ghost" && " Add Task"}
           </Button>
         </DialogTrigger>
         <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
@@ -38,7 +71,7 @@ function AddTask({
             <p className="text-sm text-zinc-600">Add a task to the board</p>
           </DialogHeader>
 
-          <form className="space-y-4" onSubmit={handleCreateTask}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label>Title *</Label>
               <Input
@@ -85,8 +118,8 @@ function AddTask({
             <div className="space-y-2">
               <Label>Due Date</Label>
               <Input
-                id="dueDate"
-                name="dueDate"
+                id="due_date"
+                name="due_date"
                 type="date"
                 placeholder="Enter due date"
               />

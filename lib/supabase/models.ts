@@ -36,6 +36,6 @@ export type taskData = {
   title: string;
   description?: string;
   assignee?: string;
-  dueDate?: string;
-  priority: "Low" | "Medium" | "High";
+  due_date?: string;
+  priority?: string;
 };

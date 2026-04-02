@@ -2,6 +2,7 @@ import { StageWithTasks } from "@/lib/supabase/models";
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import AddTask from "./AddTask";
 
 function Stage({
   stage,
@@ -38,7 +39,10 @@ function Stage({
         </div>
 
         {/*Content*/}
-        <div className="p-2">{children}</div>
+        <div className="p-2">
+          {children}
+          <AddTask onSubmit={onCreateTask} buttonVariant="ghost" />
+        </div>
       </div>
     </div>
   );

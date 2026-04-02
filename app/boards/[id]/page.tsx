@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBoard } from "@/lib/hooks/useBoards";
 import { taskData } from "@/lib/supabase/models";
-import { Filter, MoreHorizontal, Plus } from "lucide-react";
+import { Filter, MoreHorizontal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
@@ -35,7 +35,7 @@ export default function BoardPage() {
     setIsEditingBoard(true);
   };
 
-  async function handleUpdateBoard(e: React.FormEvent<HTMLFormElement>) {
+  async function handleUpdateBoard(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!newTitle.trim() || !board) return;
 
@@ -51,7 +51,7 @@ export default function BoardPage() {
   }
 
   async function createTask(taskData: taskData) {
-    const targetStage = stages[0]; // add the task to the first stage
+    const targetStage = stages[0];
     if (!targetStage) {
       throw new Error("No stages available to add the task");
     }
@@ -59,25 +59,19 @@ export default function BoardPage() {
     await createTaskHook(targetStage.id, taskData);
   }
 
-  async function handleCreateTask(e: any) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const taskData = {
-      title: formData.get("title") as string,
-      description: (formData.get("description") as string) || undefined,
-      assignee: (formData.get("assignee") as string) || undefined,
-      priority:
-        (formData.get("priority") as "Low" | "Medium" | "High") || "Medium",
-      dueDate: (formData.get("dueDate") as string) || undefined,
-    };
+  async function handleCreateTask(taskData: taskData) {
+    console.log("Parent received clean data:", taskData);
 
-    if (taskData.title.trim()) {
+    if (!taskData.title.trim()) {
+      console.error("Title is required!");
+      return;
+    }
+
+    try {
       await createTask(taskData);
-
-      const trigger = document.querySelector(
-        '[data-state="open"]',
-      ) as HTMLElement;
-      trigger?.click();
+      console.log("Task created successfully!");
+    } catch (error) {
+      console.error("Failed to create task:", error);
     }
   }
 
@@ -138,7 +132,7 @@ export default function BoardPage() {
             </div>
 
             {/*Add Task Dialog*/}
-            <AddTask handleCreateTask={handleCreateTask} />
+            <AddTask onSubmit={handleCreateTask} />
           </div>
 
           <div
