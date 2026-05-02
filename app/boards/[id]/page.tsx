@@ -51,17 +51,21 @@ export default function BoardPage() {
   }
 
   async function createTask(taskData: taskData) {
-    const targetStage = stages[0];
+    const targetStage =
+      taskData.stage_id !== undefined && taskData.stage_id !== null
+        ? Number(taskData.stage_id)
+        : Number(stages[0].id);
     if (!targetStage) {
       throw new Error("No stages available to add the task");
     }
 
-    await createTaskHook(targetStage.id, taskData);
+    await createTaskHook(targetStage, {
+      ...taskData,
+      stage_id: targetStage,
+    });
   }
 
   async function handleCreateTask(taskData: taskData) {
-    console.log("Parent received clean data:", taskData);
-
     if (!taskData.title.trim()) {
       console.error("Title is required!");
       return;

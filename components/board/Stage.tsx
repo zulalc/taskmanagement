@@ -1,4 +1,4 @@
-import { StageWithTasks } from "@/lib/supabase/models";
+import { StageWithTasks, taskData } from "@/lib/supabase/models";
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -12,7 +12,7 @@ function Stage({
 }: {
   stage: StageWithTasks;
   children: React.ReactNode;
-  onCreateTask: (taskData: any) => Promise<void>;
+  onCreateTask: (taskData: taskData) => Promise<void>;
   onEditStage: (stage: StageWithTasks) => void;
 }) {
   return (
@@ -41,7 +41,11 @@ function Stage({
         {/*Content*/}
         <div className="p-2">
           {children}
-          <AddTask onSubmit={onCreateTask} buttonVariant="ghost" />
+          <AddTask
+            onSubmit={onCreateTask}
+            buttonVariant="ghost"
+            targetStageId={stage.id}
+          />
         </div>
       </div>
     </div>

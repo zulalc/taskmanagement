@@ -18,25 +18,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { taskData } from "@/lib/supabase/models";
+import { useParams } from "next/navigation";
+import { useBoard } from "@/lib/hooks/useBoards";
 
 export const priorityOptions = ["High", "Medium", "Low"];
 
 function AddTask({
   onSubmit,
   buttonVariant,
+  targetStageId,
 }: {
   onSubmit: (data: taskData) => Promise<void>;
   buttonVariant?: "ghost" | "default";
+  targetStageId?: number;
 }) {
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { id } = useParams() as { id: string };
+  const { stages } = useBoard(id);
+  const [stageId, setStageId] = useState<string>("");
+
+  useEffect(() => {
+    if (targetStageId) {
+      setStageId(String(targetStageId));
+    } else if (stages.length > 0 && !stageId) {
+      setStageId(String(stages[0].id));
+    }
+  }, [targetStageId, stages]);
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
     const taskData: taskData = {
+      stage_id: Number(stageId),
       title: formData.get("title") as string,
       description: formData.get("description") as string,
       assignee: formData.get("assignee") as string,
@@ -72,6 +89,26 @@ function AddTask({
           </DialogHeader>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label>Stage</Label>
+              <Select
+                value={stageId}
+                onValueChange={(value) => setStageId(value)}
+                name="stage_id"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select stage" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stages.map((stage) => (
+                    <SelectItem key={stage.id} value={String(stage.id)}>
+                      {stage.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2">
               <Label>Title *</Label>
               <Input

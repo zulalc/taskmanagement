@@ -9,7 +9,7 @@ export interface Board {
 }
 
 export interface Stage {
-  id: string;
+  id: number;
   board_id: string;
   title: string;
   sort_order: number;
@@ -19,7 +19,7 @@ export interface Stage {
 
 export interface Task {
   id: string;
-  stage_id: string;
+  stage_id: number;
   title: string;
   description: string | null;
   assignee: string | null;
@@ -33,6 +33,7 @@ export interface Task {
 export type StageWithTasks = Stage & { tasks: Task[] };
 
 export type taskData = {
+  stage_id: number;
   title: string;
   description?: string;
   assignee?: string;

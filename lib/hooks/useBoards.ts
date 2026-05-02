@@ -110,7 +110,7 @@ export function useBoard(boardId: string) {
     }
   }
 
-  async function createTaskHook(stageId: string, taskData: taskData) {
+  async function createTaskHook(stageId: number, taskData: taskData) {
     try {
       const rawPriority = (taskData.priority || "Medium").toLowerCase();
       const safePriority = rawPriority as "low" | "medium" | "high";
