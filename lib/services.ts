@@ -126,6 +126,26 @@ export const taskService = {
 
     return data;
   },
+
+  async moveTask(
+    supabase: SupabaseClient,
+    taskId: number,
+    newStageId: number,
+    newOrder: number,
+  ) {
+    const { data, error } = await supabase
+      .from("tasks")
+      .update({
+        stage_id: Number(newStageId),
+        sort_order: newOrder,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", taskId);
+
+    if (error) throw error;
+
+    return data;
+  },
 };
 
 export const boardDataServices = {

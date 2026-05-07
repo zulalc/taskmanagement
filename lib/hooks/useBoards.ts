@@ -2,7 +2,7 @@
 import { useUser } from "@clerk/nextjs";
 import { boardDataServices, boardService, taskService } from "../services";
 import { useEffect, useState } from "react";
-import { Board, StageWithTasks, taskData } from "../supabase/models";
+import { Board, StageWithTasks, Task, taskData } from "../supabase/models";
 import { useSupabase } from "../supabase/SupabaseProvider";
 
 export function useBoards() {
@@ -146,5 +146,79 @@ export function useBoard(boardId: string) {
     }
   }
 
-  return { board, stages, loading, error, updateBoard, createTaskHook };
+  async function moveTask(
+    taskId: number,
+    newStageId: number,
+    newOrder: number,
+  ) {
+    try {
+      await taskService.moveTask(supabase!, taskId, newStageId, newOrder);
+
+      setStages((prev) => {
+        const newStages = [...prev];
+
+        // Find and remove task from old stage
+        let taskToMove: Task | null = null;
+        let oldStageId: number | null = null;
+
+        for (const stage of newStages) {
+          console.log(
+            "Checking stage:",
+            stage.id,
+            "Tasks:",
+            stage.tasks.map((t) => ({
+              id: t.id,
+              title: t.title,
+            })),
+          );
+
+          const taskIndex = stage.tasks.findIndex(
+            (task) => Number(task.id) === taskId,
+          );
+
+          if (taskIndex !== -1) {
+            taskToMove = stage.tasks[taskIndex];
+            oldStageId = stage.id;
+
+            stage.tasks.splice(taskIndex, 1);
+
+            break;
+          }
+        }
+
+        if (!taskToMove) {
+          console.error("Task was NOT found in any stage");
+        }
+
+        const targetStage = newStages.find(
+          (stage) => stage.id === Number(newStageId),
+        );
+
+        if (taskToMove && targetStage) {
+          targetStage.tasks.splice(newOrder, 0, taskToMove);
+        } else {
+          console.error("Move failed:");
+          console.error("taskToMove:", taskToMove);
+          console.error("targetStage:", targetStage);
+        }
+
+        return newStages;
+      });
+    } catch (err) {
+      console.error("MOVE TASK ERROR:", err);
+
+      setError(err instanceof Error ? err.message : "Failed to move task.");
+    }
+  }
+
+  return {
+    board,
+    stages,
+    loading,
+    error,
+    updateBoard,
+    createTaskHook,
+    setStages,
+    moveTask,
+  };
 }
