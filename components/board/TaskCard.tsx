@@ -1,8 +1,19 @@
 import { Task } from "@/lib/supabase/models";
 import { Card, CardContent } from "../ui/card";
 import { Calendar, User } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function TaskCard({ task }: { task: Task }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
+
   function getPriorityColor(priority: "low" | "medium" | "high") {
     switch (priority) {
       case "low":
@@ -16,8 +27,14 @@ function TaskCard({ task }: { task: Task }) {
     }
   }
 
+  const styles = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   return (
-    <div>
+    <div ref={setNodeRef} style={styles} {...attributes} {...listeners}>
       <Card className="cursor-pointer hover:shadow-md transition-shadow">
         <CardContent className="p-3 sm:p-4">
           <div className="space-y-2 sm:space-y-3">

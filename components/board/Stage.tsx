@@ -3,6 +3,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import AddTask from "./AddTask";
+import { useDroppable } from "@dnd-kit/core";
 
 function Stage({
   stage,
@@ -15,8 +16,12 @@ function Stage({
   onCreateTask: (taskData: taskData) => Promise<void>;
   onEditStage: (stage: StageWithTasks) => void;
 }) {
+  const { setNodeRef, isOver } = useDroppable({ id: stage.id });
   return (
-    <div className="w-full lg:shrink-0 lg:w-80">
+    <div
+      ref={setNodeRef}
+      className={`*:w-full lg:shrink-0 lg:w-80 ${isOver ? "bg-blue-50 rounded-lg" : ""} `}
+    >
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-3 sm:p-4 border-b">
           <div className="flex items-center justify-between">

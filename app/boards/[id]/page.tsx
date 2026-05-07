@@ -9,14 +9,43 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBoard } from "@/lib/hooks/useBoards";
-import { taskData } from "@/lib/supabase/models";
-import { Filter, MoreHorizontal } from "lucide-react";
+import { Task, taskData } from "@/lib/supabase/models";
+import { Filter, MoreHorizontal, Pointer } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  rectIntersection,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useDragHandlers } from "@/lib/hooks/useDragHandlers";
 
 export default function BoardPage() {
   const { id } = useParams() as { id: string };
-  const { board, updateBoard, stages, createTaskHook } = useBoard(id);
+  const { board, updateBoard, stages, createTaskHook, setStages, moveTask } =
+    useBoard(id);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const { handleDragStart, handleDragOver, handleDragEnd } = useDragHandlers({
+    stages,
+    setStages,
+    setActiveTask,
+    moveTask,
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+  );
 
   const [isEditingBoard, setIsEditingBoard] = useState(false);
   const [newColor, setNewColor] = useState("");
@@ -139,30 +168,48 @@ export default function BoardPage() {
             <AddTask onSubmit={handleCreateTask} />
           </div>
 
-          <div
-            className="flex flex-col lg:flex-row lg:space-x-6 lg:overflow-x-auto 
+          <DndContext
+            sensors={sensors}
+            collisionDetection={rectIntersection}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDragEnd={handleDragEnd}
+            onDragCancel={() => setActiveTask(null)}
+          >
+            <div
+              className="flex flex-col lg:flex-row lg:space-x-6 lg:overflow-x-auto 
           lg:pb-6 lg:px-2 lg:mx-2 lg:[&::-webkit-scrollbar]:h-2
           lg:[&::-webkit-scrollbar-track]:bg-zinc-100
           lg:[&::-webkit-scrollbar-thumb]:bg-zinc-300
           lg:[&::-webkit-scrollbar-thumb]:rounded-full
           space-y-4 lg:space-y-0
           "
-          >
-            {stages.map((stage, key) => (
-              <Stage
-                key={key}
-                stage={stage}
-                onCreateTask={createTask}
-                onEditStage={() => {}}
-              >
-                <div className="space-y-3">
-                  {stage.tasks.map((task, key) => (
-                    <TaskCard key={key} task={task} />
-                  ))}
-                </div>
-              </Stage>
-            ))}
-          </div>
+            >
+              {stages.map((stage, key) => (
+                <Stage
+                  key={key}
+                  stage={stage}
+                  onCreateTask={createTask}
+                  onEditStage={() => {}}
+                >
+                  <SortableContext
+                    items={stage.tasks.map((t) => t.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-3">
+                      {stage.tasks.map((task, key) => (
+                        <TaskCard key={key} task={task} />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </Stage>
+              ))}
+
+              <DragOverlay>
+                {activeTask ? <TaskCard task={activeTask} /> : null}
+              </DragOverlay>
+            </div>
+          </DndContext>
         </main>
       </main>
     </div>
