@@ -20,7 +20,7 @@ function Stage({
   return (
     <div
       ref={setNodeRef}
-      className={`*:w-full lg:shrink-0 lg:w-80 ${isOver ? "bg-blue-50 rounded-lg" : ""} `}
+      className={`*:w-full lg:shrink-0 lg:w-80 ${isOver ? "ring-2 ring-[#008170] rounded-lg" : ""} `}
     >
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-3 sm:p-4 border-b">
