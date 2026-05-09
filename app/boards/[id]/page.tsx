@@ -26,11 +26,19 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useDragHandlers } from "@/lib/hooks/useDragHandlers";
+import AddStage from "@/components/board/AddStage";
 
 export default function BoardPage() {
   const { id } = useParams() as { id: string };
-  const { board, updateBoard, stages, createTaskHook, setStages, moveTask } =
-    useBoard(id);
+  const {
+    board,
+    updateBoard,
+    stages,
+    createTaskHook,
+    setStages,
+    moveTask,
+    createStage,
+  } = useBoard(id);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { handleDragStart, handleDragOver, handleDragEnd } = useDragHandlers({
     stages,
@@ -166,6 +174,8 @@ export default function BoardPage() {
 
             {/*Add Task Dialog*/}
             <AddTask onSubmit={handleCreateTask} />
+
+            <AddStage createStage={createStage} />
           </div>
 
           <DndContext

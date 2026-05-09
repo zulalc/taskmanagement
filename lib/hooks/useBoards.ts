@@ -1,6 +1,11 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import { boardDataServices, boardService, taskService } from "../services";
+import {
+  boardDataServices,
+  boardService,
+  stageService,
+  taskService,
+} from "../services";
 import { useEffect, useState } from "react";
 import { Board, StageWithTasks, Task, taskData } from "../supabase/models";
 import { useSupabase } from "../supabase/SupabaseProvider";
@@ -63,6 +68,7 @@ export function useBoards() {
 
 export function useBoard(boardId: string) {
   const { supabase } = useSupabase();
+  const { user } = useUser();
   const [board, setBoard] = useState<Board | null>(null);
   const [stages, setStages] = useState<StageWithTasks[]>([]);
   const [loading, setLoading] = useState(true);
@@ -211,6 +217,27 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function createStage(title: string) {
+    if (!board || !user) throw new Error("Board or user not found");
+
+    try {
+      const newStage = await stageService.createStage(supabase!, {
+        title,
+        board_id: board.id,
+        sort_order: stages.length,
+        user_id: user.id,
+      });
+
+      setStages((prev) => [...prev, { ...newStage, tasks: [] }]);
+      return newStage;
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to create stage.",
+      );
+      throw error;
+    }
+  }
+
   return {
     board,
     stages,
@@ -220,5 +247,6 @@ export function useBoard(boardId: string) {
     createTaskHook,
     setStages,
     moveTask,
+    createStage,
   };
 }
