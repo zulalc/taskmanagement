@@ -60,7 +60,7 @@ function AddStage({
       "
           >
             <CardContent
-              className="flex flex-col items-center justify-center min-h-55 p-6
+              className="flex flex-col items-center justify-center h-full min-h-55 p-6
         "
             >
               <Plus
