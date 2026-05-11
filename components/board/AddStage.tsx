@@ -12,11 +12,15 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Stage } from "@/lib/supabase/models";
+import { Plus } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
 
 function AddStage({
   createStage,
+  buttonVariant,
 }: {
   createStage: (title: string) => Promise<Stage>;
+  buttonVariant?: "ghost" | "default";
 }) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -38,7 +42,46 @@ function AddStage({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Stage</Button>
+        {buttonVariant === "ghost" ? (
+          <Card
+            className="
+        min-w-70
+        mt-1
+        border-2 border-dashed
+        border-zinc-300
+        hover:border-[#008170]
+        bg-transparent
+        hover:bg-[#008170]/5
+        cursor-pointer
+        transition-all
+        duration-200
+        group
+        shrink-0
+      "
+          >
+            <CardContent
+              className="flex flex-col items-center justify-center min-h-55 p-6
+        "
+            >
+              <Plus
+                className="w-8 h-8 text-zinc-400 group-hover:text-[#008170] transition-colors mb-3
+          "
+              />
+
+              <p
+                className="text-sm sm:text-base font-medium text-zinc-500 group-hover:text-[#008170] transition-colors text-center
+          "
+              >
+                Create New Stage
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Button className="w-full sm:w-auto cursor-pointer">
+            <Plus />
+            Create Stage
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="w-[95vw] max-w-106.25 mx-auto">

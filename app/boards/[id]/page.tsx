@@ -171,11 +171,10 @@ export default function BoardPage() {
                 {stages.reduce((total, stage) => total + stage.tasks.length, 0)}
               </div>
             </div>
-
-            {/*Add Task Dialog*/}
-            <AddTask onSubmit={handleCreateTask} />
-
-            <AddStage createStage={createStage} />
+            <div className="flex flex-col sm:flex-row gap-1 sm:w-auto">
+              <AddTask onSubmit={handleCreateTask} />
+              <AddStage createStage={createStage} />
+            </div>
           </div>
 
           <DndContext
@@ -218,6 +217,8 @@ export default function BoardPage() {
               <DragOverlay>
                 {activeTask ? <TaskCard task={activeTask} /> : null}
               </DragOverlay>
+
+              <AddStage createStage={createStage} buttonVariant="ghost" />
             </div>
           </DndContext>
         </main>
