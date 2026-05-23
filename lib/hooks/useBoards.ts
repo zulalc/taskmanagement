@@ -238,6 +238,32 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function updateStage(stageId: number, title: string) {
+    try {
+      const updatedStage = await stageService.updateStageTitle(
+        supabase!,
+        stageId,
+        title,
+      );
+
+      setStages((prev) => {
+        console.log("PREV STAGES:", prev);
+
+        const updated = prev.map((stage) =>
+          stage.id === stageId ? { ...stage, ...updatedStage } : stage,
+        );
+
+        return updated;
+      });
+
+      return updatedStage;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update stage.");
+
+      throw err;
+    }
+  }
+
   return {
     board,
     stages,
@@ -248,5 +274,6 @@ export function useBoard(boardId: string) {
     setStages,
     moveTask,
     createStage,
+    updateStage,
   };
 }

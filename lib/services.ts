@@ -89,6 +89,25 @@ export const stageService = {
 
     return data;
   },
+
+  async updateStageTitle(
+    supabase: SupabaseClient,
+    stageId: number,
+    title: string,
+  ): Promise<Stage> {
+    const query = supabase
+      .from("stages")
+      .update({ title })
+      .eq("id", stageId)
+      .select()
+      .single();
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    return data;
+  },
 };
 
 export const taskService = {

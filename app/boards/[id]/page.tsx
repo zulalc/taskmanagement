@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useBoard } from "@/lib/hooks/useBoards";
 import { Task, taskData } from "@/lib/supabase/models";
-import { Filter, MoreHorizontal, Pointer } from "lucide-react";
+import { Filter, MoreHorizontal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
@@ -199,7 +199,7 @@ export default function BoardPage() {
                   key={key}
                   stage={stage}
                   onCreateTask={createTask}
-                  onEditStage={() => {}}
+                  boardId={id}
                 >
                   <SortableContext
                     items={stage.tasks.map((t) => t.id)}

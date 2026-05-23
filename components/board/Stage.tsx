@@ -1,22 +1,28 @@
+"use client";
 import { StageWithTasks, taskData } from "@/lib/supabase/models";
 import { MoreHorizontal } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import AddTask from "./AddTask";
 import { useDroppable } from "@dnd-kit/core";
+import { useState } from "react";
+import EditStage from "./EditStage";
 
 function Stage({
   stage,
   children,
   onCreateTask,
-  onEditStage,
+  boardId,
 }: {
   stage: StageWithTasks;
   children: React.ReactNode;
   onCreateTask: (taskData: taskData) => Promise<void>;
-  onEditStage: (stage: StageWithTasks) => void;
+  boardId: string;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
+
+  const [isEditingStage, setIsEditingStage] = useState(false);
+
   return (
     <div
       ref={setNodeRef}
@@ -37,11 +43,19 @@ function Stage({
               variant={"ghost"}
               size={"sm"}
               className="shrink-0 cursor-pointer"
+              onClick={() => setIsEditingStage(true)}
             >
               <MoreHorizontal />
             </Button>
           </div>
         </div>
+
+        <EditStage
+          stage={stage}
+          isEditingStage={isEditingStage}
+          setIsEditingStage={setIsEditingStage}
+          boardId={boardId}
+        />
 
         {/*Content*/}
         <div className="p-2">
