@@ -1,4 +1,5 @@
 "use client";
+import CreateBoard from "@/components/board/CreateBoard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +29,8 @@ import { useState } from "react";
 
 function Page() {
   const { user } = useUser();
-  const { createBoard, boards, loading, error } = useBoards();
+  const { boards, loading, error } = useBoards();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-
-  const handleCreateBoards = async () => {
-    await createBoard({ title: "New Board" });
-  };
 
   if (loading) {
     return (
@@ -57,16 +54,6 @@ function Page() {
         <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">
           Welcome back, {user?.username}
         </h1>
-
-        <Button
-          variant="default"
-          size="sm"
-          className="mt-4 flex items-center gap-2 cursor-pointer"
-          onClick={handleCreateBoards}
-        >
-          <Plus size={16} />
-          Create New Board
-        </Button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -151,7 +138,6 @@ function Page() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0"></div>
           <div className="flex items-center space-x-2 bg-white border p-1">
             <Button
               className="cursor-pointer"
@@ -177,10 +163,7 @@ function Page() {
             Filter
           </Button>
 
-          <Button onClick={handleCreateBoards} className="cursor-pointer">
-            <Plus />
-            Create Board
-          </Button>
+          <CreateBoard />
         </div>
       </div>
 
@@ -228,14 +211,7 @@ function Page() {
             </Link>
           ))}
 
-          <Card className="border-2 border-dashed border-zinc-300 hover:border-[#008170] cursor-pointer transition-colors group">
-            <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full min-h-50">
-              <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-400 group-hover:text-[#008170]  mb-2" />
-              <p className="text-sm sm:text-base text-zinc-600 group-hover:text-[#008170] font-medium">
-                Create New Board
-              </p>
-            </CardContent>
-          </Card>
+          <CreateBoard buttonVariant="ghost" />
         </div>
       ) : (
         <div>
@@ -286,14 +262,7 @@ function Page() {
             </div>
           ))}
 
-          <Card className="mt-4 border-2 border-dashed border-zinc-300 hover:border-[#008170] cursor-pointer transition-colors group">
-            <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6 h-full min-h-50">
-              <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-zinc-400 group-hover:text-[#008170]  mb-2" />
-              <p className="text-sm sm:text-base text-zinc-600 group-hover:text-[#008170] font-medium">
-                Create New Board
-              </p>
-            </CardContent>
-          </Card>
+          <CreateBoard buttonVariant="ghost" />
         </div>
       )}
     </main>
