@@ -9,7 +9,7 @@ import {
 
 import Link from "next/link";
 
-function BreadCrumbs({ name }: { name: string }) {
+function BreadCrumbs({ name, color }: { name: string; color: string }) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -31,6 +31,7 @@ function BreadCrumbs({ name }: { name: string }) {
 
         <BreadcrumbItem>
           <BreadcrumbPage>{name}</BreadcrumbPage>
+          <div className="w-3 h-3 rounded" style={{ backgroundColor: color }} />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

@@ -30,15 +30,8 @@ import AddStage from "@/components/board/AddStage";
 
 export default function BoardPage() {
   const { id } = useParams() as { id: string };
-  const {
-    board,
-    updateBoard,
-    stages,
-    createTaskHook,
-    setStages,
-    moveTask,
-    createStage,
-  } = useBoard(id);
+  const { board, stages, createTaskHook, setStages, moveTask, createStage } =
+    useBoard(id);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { handleDragStart, handleDragOver, handleDragEnd } = useDragHandlers({
     stages,
@@ -93,7 +86,10 @@ export default function BoardPage() {
     <div className="min-h-screen bg-zinc-50">
       <main className="max-w-7xl mx-auto px-5 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8 flex flex-wrap items-center justify-between gap-2">
-          <BreadCrumbs name={board?.title || "Board"} />
+          <BreadCrumbs
+            name={board?.title || "Board"}
+            color={board?.color || "#008170"}
+          />
           <div className="flex items-center gap-1">
             <Button
               variant={"outline"}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ColorPanel from "../color/colorPanel";
 import { Button } from "../ui/button";
 import {
@@ -18,8 +18,15 @@ import { MoreHorizontal } from "lucide-react";
 function EditBoard({ boardId }: { boardId: string }) {
   const [open, setOpen] = useState(false);
   const { board, updateBoard } = useBoard(boardId);
-  const [newTitle, setNewTitle] = useState(board?.title || "");
-  const [newColor, setNewColor] = useState(board?.color || "#008170");
+  const [newTitle, setNewTitle] = useState("");
+  const [newColor, setNewColor] = useState("#008170");
+
+  useEffect(() => {
+    if (board) {
+      setNewTitle(board.title);
+      setNewColor(board.color ?? "#008170");
+    }
+  }, [board]);
 
   async function handleUpdateBoard(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,8 +42,6 @@ function EditBoard({ boardId }: { boardId: string }) {
       });
 
       setOpen(false);
-      setNewTitle("");
-      setNewColor("");
     } catch (error) {
       console.error("Failed to update board:", error);
     }
