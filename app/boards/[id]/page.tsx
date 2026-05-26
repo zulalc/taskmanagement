@@ -55,37 +55,10 @@ export default function BoardPage() {
     }),
   );
 
-  const [isEditingBoard, setIsEditingBoard] = useState(false);
-  const [newColor, setNewColor] = useState("");
-  const [newTitle, setNewTitle] = useState("");
-
   const [isFiltering, setIsFiltering] = useState(false);
   const [filterCount, setFilterCount] = useState(0);
   // onFilterClick={() => {}}
   //filterCount = {2}
-
-  const handleEditBoard = () => {
-    if (!board) return;
-
-    setNewColor(board.color ?? "");
-    setNewTitle(board.title ?? "");
-    setIsEditingBoard(true);
-  };
-
-  async function handleUpdateBoard(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!newTitle.trim() || !board) return;
-
-    try {
-      await updateBoard(board.id, {
-        title: newTitle.trim(),
-        color: newColor || board.color,
-      });
-      setIsEditingBoard(false);
-    } catch (error) {
-      console.error("Failed to update board:", error);
-    }
-  }
 
   async function createTask(taskData: taskData) {
     const targetStage =
@@ -135,27 +108,9 @@ export default function BoardPage() {
                 </Badge>
               )}
             </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="cursor-pointer"
-              onClick={handleEditBoard}
-            >
-              <MoreHorizontal />
-            </Button>
+            <EditBoard boardId={id} />
           </div>
         </div>
-
-        <EditBoard
-          isEditingBoard={isEditingBoard}
-          setIsEditingBoard={setIsEditingBoard}
-          newTitle={newTitle}
-          setNewTitle={setNewTitle}
-          newColor={newColor}
-          setNewColor={setNewColor}
-          handleUpdateBoard={handleUpdateBoard}
-        />
 
         <FilterTasks
           isFiltering={isFiltering}

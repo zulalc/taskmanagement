@@ -1,32 +1,60 @@
+"use client";
+import { useState } from "react";
 import ColorPanel from "../color/colorPanel";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useBoard } from "@/lib/hooks/useBoards";
+import { MoreHorizontal } from "lucide-react";
 
-function EditBoard({
-  isEditingBoard,
-  setIsEditingBoard,
-  newTitle,
-  setNewTitle,
-  newColor,
-  setNewColor,
-  handleUpdateBoard,
-}: {
-  isEditingBoard: boolean;
-  setIsEditingBoard: (value: boolean) => void;
-  newTitle: string;
-  setNewTitle: (value: string) => void;
-  newColor: string;
-  setNewColor: (value: string) => void;
-  handleUpdateBoard: (e: React.SubmitEvent<HTMLFormElement>) => void;
-}) {
+function EditBoard({ boardId }: { boardId: string }) {
+  const [open, setOpen] = useState(false);
+  const { board, updateBoard } = useBoard(boardId);
+  const [newTitle, setNewTitle] = useState(board?.title || "");
+  const [newColor, setNewColor] = useState(board?.color || "#008170");
+
+  async function handleUpdateBoard(e: React.SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!newTitle.trim()) {
+      return;
+    }
+
+    try {
+      await updateBoard(boardId, {
+        title: newTitle.trim(),
+        color: newColor,
+      });
+
+      setOpen(false);
+      setNewTitle("");
+      setNewColor("");
+    } catch (error) {
+      console.error("Failed to update board:", error);
+    }
+  }
+
   return (
     <div>
-      <Dialog open={isEditingBoard} onOpenChange={setIsEditingBoard}>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            <MoreHorizontal />
+          </Button>
+        </DialogTrigger>
+
         <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
           <DialogHeader>
             <DialogTitle>Edit Board</DialogTitle>
+            <DialogDescription>Edit your board</DialogDescription>
           </DialogHeader>
 
           <form className="space-y-4" onSubmit={handleUpdateBoard}>
@@ -52,12 +80,12 @@ function EditBoard({
                 type="button"
                 variant={"outline"}
                 className="cursor-pointer"
-                onClick={() => setIsEditingBoard(false)}
+                onClick={() => setOpen(false)}
               >
                 Cancel
               </Button>
               <Button type="submit" className="cursor-pointer">
-                Submit
+                Edit Board
               </Button>
             </div>
           </form>
