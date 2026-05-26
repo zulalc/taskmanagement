@@ -66,7 +66,7 @@ function CreateBoard({
         group
       "
           >
-            <CardContent className="flex flex-col items-center justify-center h-full  min-h-[132px] p-6">
+            <CardContent className="flex flex-col items-center justify-center h-full  min-h-33 p-6">
               <Plus className="w-8 h-8 text-zinc-400 group-hover:text-[#008170] transition-colors mb-3" />
 
               <p className="text-sm sm:text-base font-medium text-zinc-500 group-hover:text-[#008170] transition-colors text-center">
@@ -84,13 +84,13 @@ function CreateBoard({
 
       <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
         <DialogHeader>
-          <DialogTitle>Create Board * </DialogTitle>
+          <DialogTitle>Create Board</DialogTitle>
         </DialogHeader>
 
         <form className="space-y-4" onSubmit={handleCreateBoard}>
           <div className="space-y-2">
             <Label htmlFor="boardTitle" className="mb-4">
-              Board Title
+              Board Title *
             </Label>
             <Input
               id="boardTitle"
