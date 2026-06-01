@@ -6,11 +6,8 @@ import FilterTasks from "@/components/board/FilterTasks";
 import Stage from "@/components/board/Stage";
 import TaskCard from "@/components/board/TaskCard";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useBoard } from "@/lib/hooks/useBoards";
 import { Task, taskData } from "@/lib/supabase/models";
-import { Filter, MoreHorizontal } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import {
@@ -48,10 +45,34 @@ export default function BoardPage() {
     }),
   );
 
-  const [isFiltering, setIsFiltering] = useState(false);
-  const [filterCount, setFilterCount] = useState(0);
-  // onFilterClick={() => {}}
-  //filterCount = {2}
+  const [filters, setFilters] = useState({
+    priority: [] as string[],
+    assignee: [] as string[],
+    due_date: null as string | null,
+  });
+
+  const hasActiveFilters =
+    filters.priority.length > 0 ||
+    filters.assignee.length > 0 ||
+    !!filters.due_date;
+
+  const filteredStages = stages.map((stage) => ({
+    ...stage,
+    tasks: stage.tasks.filter((task) => {
+      const priorityMatch =
+        filters.priority.length === 0 ||
+        filters.priority
+          .map((p) => p.toLowerCase())
+          .includes(task.priority?.toLowerCase());
+
+      const dueDateMatch =
+        !filters.due_date || task.due_date?.split("T")[0] === filters.due_date;
+
+      return priorityMatch && dueDateMatch;
+    }),
+  }));
+
+  const visibleStages = hasActiveFilters ? filteredStages : stages;
 
   async function createTask(taskData: taskData) {
     const targetStage =
@@ -91,27 +112,10 @@ export default function BoardPage() {
             color={board?.color || "#008170"}
           />
           <div className="flex items-center gap-1">
-            <Button
-              variant={"outline"}
-              size={"sm"}
-              className={`cursor-pointer text-xs sm:text-sm ${filterCount > 0 ? "bg-[#008170] border-[#008170] text-white" : ""}`}
-              onClick={() => setIsFiltering(true)}
-            >
-              <Filter className="w-3 h-3 sm:w-4 h:w-4 " /> Filter
-              {filterCount > 0 && (
-                <Badge variant={"secondary"} className="text-xs">
-                  {filterCount}
-                </Badge>
-              )}
-            </Button>
+            <FilterTasks filters={filters} setFilters={setFilters} />
             <EditBoard boardId={id} />
           </div>
         </div>
-
-        <FilterTasks
-          isFiltering={isFiltering}
-          setIsFiltering={setIsFiltering}
-        />
 
         {/*Board Content*/}
         <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
@@ -145,7 +149,7 @@ export default function BoardPage() {
           space-y-4 lg:space-y-0
           "
             >
-              {stages.map((stage, key) => (
+              {visibleStages.map((stage, key) => (
                 <Stage
                   key={key}
                   stage={stage}
