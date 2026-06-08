@@ -1,5 +1,6 @@
 "use client";
 import CreateBoard from "@/components/board/CreateBoard";
+import FilterBoards from "@/components/FilterBoards";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,6 @@ import {
   List,
   Loader2,
   Notebook,
-  Plus,
   Search,
 } from "lucide-react";
 import Link from "next/link";
@@ -31,6 +31,35 @@ function Page() {
   const { user } = useUser();
   const { boards, loading, error } = useBoards();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  const [filters, setFilters] = useState({
+    title: "",
+    dateRange: {
+      start: null as string | null,
+      end: null as string | null,
+    },
+  });
+
+  const hasActiveFilters =
+    filters.title.length > 0 ||
+    !!filters.dateRange.start ||
+    !!filters.dateRange.end;
+
+  const filteredBoards = boards.filter((board) => {
+    const titleMatch = board.title
+      .toLowerCase()
+      .includes(filters.title.toLowerCase());
+
+    const matchesDateRange =
+      (!filters.dateRange.start ||
+        new Date(board.created_at) >= new Date(filters.dateRange.start)) &&
+      (!filters.dateRange.end ||
+        new Date(board.created_at) <= new Date(filters.dateRange.end));
+
+    return titleMatch && matchesDateRange;
+  });
+
+  const visibleBoards = hasActiveFilters ? filteredBoards : boards;
 
   if (loading) {
     return (
@@ -158,25 +187,29 @@ function Page() {
             </Button>
           </div>
 
-          <Button className="cursor-pointer" variant={"outline"} size="sm">
-            <Filter />
-            Filter
-          </Button>
+          <FilterBoards filters={filters} setFilters={setFilters} />
 
           <CreateBoard />
         </div>
       </div>
 
       <div className="relative mb-4 sm:mb-6">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-400" />
-        <Input id="search" placeholder="Search boards..." className="pl-10" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Input
+          id="title"
+          placeholder="Search boards..."
+          className="pl-10"
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, title: e.target.value }))
+          }
+        />
       </div>
 
       {boards.length === 0 ? (
         <div>No boards yet.</div>
       ) : viewMode === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {boards.map((board) => (
+          {visibleBoards.map((board) => (
             <Link href={`/boards/${board.id}`} key={board.id}>
               <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
                 <CardHeader className="pb-3">
