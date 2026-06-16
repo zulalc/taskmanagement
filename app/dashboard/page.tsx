@@ -11,13 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { usePlan } from "@/lib/contexts/PlanContext";
 import { useBoards } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
 import {
   AlertCircle,
   CheckCheck,
   ClipboardList,
-  Filter,
   Grid2X2,
   List,
   Loader2,
@@ -31,6 +31,9 @@ function Page() {
   const { user } = useUser();
   const { boards, loading, error } = useBoards();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const { isFreeUser } = usePlan();
+
+  const canCreateBoard = !isFreeUser || (isFreeUser && boards.length < 1);
 
   const [filters, setFilters] = useState({
     title: "",
@@ -81,7 +84,7 @@ function Page() {
     <main className="max-w-7xl mx-auto px-5 py-8">
       <div className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-bold text-zinc-900">
-          Welcome back, {user?.username}
+          Welcome back!
         </h1>
       </div>
 
@@ -164,32 +167,38 @@ function Page() {
             </h2>
             <p className="text-sm text-zinc-500">
               Manage your boards and tasks
+              {isFreeUser && (
+                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Free Plan: {boards.length} / 1 boards used
+                </span>
+              )}
             </p>
           </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center space-x-2 rounded bg-white border p-1">
+              <Button
+                className="cursor-pointer"
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="icon"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid2X2 />
+              </Button>
 
-          <div className="flex items-center space-x-2 bg-white border p-1">
-            <Button
-              className="cursor-pointer"
-              variant={viewMode === "grid" ? "default" : "ghost"}
-              size="icon"
-              onClick={() => setViewMode("grid")}
-            >
-              <Grid2X2 />
-            </Button>
+              <Button
+                className="cursor-pointer"
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="icon"
+                onClick={() => setViewMode("list")}
+              >
+                <List />
+              </Button>
+            </div>
 
-            <Button
-              className="cursor-pointer"
-              variant={viewMode === "list" ? "default" : "ghost"}
-              size="icon"
-              onClick={() => setViewMode("list")}
-            >
-              <List />
-            </Button>
+            <FilterBoards filters={filters} setFilters={setFilters} />
+
+            <CreateBoard canCreateBoard={canCreateBoard} />
           </div>
-
-          <FilterBoards filters={filters} setFilters={setFilters} />
-
-          <CreateBoard />
         </div>
       </div>
 
@@ -244,7 +253,7 @@ function Page() {
             </Link>
           ))}
 
-          <CreateBoard buttonVariant="ghost" />
+          <CreateBoard buttonVariant="ghost" canCreateBoard={canCreateBoard} />
         </div>
       ) : (
         <div>
@@ -295,7 +304,7 @@ function Page() {
             </div>
           ))}
 
-          <CreateBoard buttonVariant="ghost" />
+          <CreateBoard buttonVariant="ghost" canCreateBoard={canCreateBoard} />
         </div>
       )}
     </main>
