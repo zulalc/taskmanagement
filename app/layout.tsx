@@ -11,6 +11,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
 import ScrollToTop from "@/components/scrollToTop";
+import Footer from "@/components/footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
             <main className="pt-5 bg-zinc-50 min-h-screen">
               <ScrollToTop>{children}</ScrollToTop>
             </main>
+            <Footer />
           </SupabaseProvider>
         </body>
       </html>
