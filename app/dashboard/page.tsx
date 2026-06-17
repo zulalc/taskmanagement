@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { usePlan } from "@/lib/contexts/PlanContext";
-import { useBoards } from "@/lib/hooks/useBoards";
+import { useBoards, useDashboardStats } from "@/lib/hooks/useBoards";
 import { useUser } from "@clerk/nextjs";
 import {
   AlertCircle,
   CheckCheck,
+  CheckCircle,
   ClipboardList,
   Grid2X2,
   List,
@@ -28,12 +29,17 @@ import Link from "next/link";
 import { useState } from "react";
 
 function Page() {
-  const { user } = useUser();
   const { boards, loading, error } = useBoards();
+  const { stats } = useDashboardStats();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { isFreeUser } = usePlan();
 
   const canCreateBoard = !isFreeUser || (isFreeUser && boards.length < 1);
+
+  const isNew = (createdAt: string) => {
+    const diff = Date.now() - new Date(createdAt).getTime();
+    return diff < 7 * 24 * 60 * 60 * 1000;
+  };
 
   const [filters, setFilters] = useState({
     title: "",
@@ -113,7 +119,9 @@ function Page() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-zinc-500">Total Tasks</p>
-                <p className="mt-1 text-2xl font-semibold text-zinc-900">48</p>
+                <p className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {stats.totalTasks}
+                </p>
               </div>
 
               <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-purple-100">
@@ -128,13 +136,15 @@ function Page() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-zinc-500">
-                  Completed Tasks
+                  Overdue Tasks
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-zinc-900">12</p>
+                <p className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {stats.overdueTasks}
+                </p>
               </div>
 
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-green-100">
-                <CheckCheck className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-red-100">
+                <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
               </div>
             </div>
           </CardContent>
@@ -145,13 +155,15 @@ function Page() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-zinc-500">
-                  Overdue Tasks
+                  Completed Tasks
                 </p>
-                <p className="mt-1 text-2xl font-semibold text-zinc-900">3</p>
+                <p className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {stats.completedTasks}
+                </p>
               </div>
 
-              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-red-100">
-                <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+              <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-green-100">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
             </div>
           </CardContent>
@@ -227,9 +239,11 @@ function Page() {
                       className="w-4 h-4 rounded"
                       style={{ backgroundColor: board.color }}
                     />
-                    <Badge className="text-xs" variant={"secondary"}>
-                      New
-                    </Badge>
+                    {isNew(board.created_at) && (
+                      <Badge className="text-xs" variant="secondary">
+                        New
+                      </Badge>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6">
@@ -267,9 +281,11 @@ function Page() {
                         className="w-4 h-4 rounded"
                         style={{ backgroundColor: board.color }}
                       />
-                      <Badge className="text-xs" variant={"secondary"}>
-                        New
-                      </Badge>
+                      {isNew(board.created_at) && (
+                        <Badge className="text-xs" variant="secondary">
+                          New
+                        </Badge>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6">
@@ -303,7 +319,7 @@ function Page() {
               </Link>
             </div>
           ))}
-
+          <div className="mt-4" />
           <CreateBoard buttonVariant="ghost" canCreateBoard={canCreateBoard} />
         </div>
       )}
