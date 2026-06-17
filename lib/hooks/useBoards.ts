@@ -217,7 +217,7 @@ export function useBoard(boardId: string) {
     }
   }
 
-  async function createStage(title: string) {
+  async function createStage(title: string, isCompleted: boolean) {
     if (!board || !user) throw new Error("Board or user not found");
 
     try {
@@ -226,6 +226,7 @@ export function useBoard(boardId: string) {
         board_id: board.id,
         sort_order: stages.length,
         user_id: user.id,
+        is_completed: isCompleted,
       });
 
       setStages((prev) => [...prev, { ...newStage, tasks: [] }]);
@@ -238,17 +239,20 @@ export function useBoard(boardId: string) {
     }
   }
 
-  async function updateStage(stageId: number, title: string) {
+  async function updateStage(
+    stageId: number,
+    title: string,
+    isCompleted: boolean,
+  ) {
     try {
-      const updatedStage = await stageService.updateStageTitle(
+      const updatedStage = await stageService.updateStage(
         supabase!,
         stageId,
         title,
+        isCompleted,
       );
 
       setStages((prev) => {
-        console.log("PREV STAGES:", prev);
-
         const updated = prev.map((stage) =>
           stage.id === stageId ? { ...stage, ...updatedStage } : stage,
         );
@@ -263,7 +267,6 @@ export function useBoard(boardId: string) {
       throw err;
     }
   }
-
   return {
     board,
     stages,
@@ -276,4 +279,50 @@ export function useBoard(boardId: string) {
     createStage,
     updateStage,
   };
+}
+
+export function useDashboardStats() {
+  const { supabase } = useSupabase();
+  const { user } = useUser();
+  const [stats, setStats] = useState({
+    totalTasks: 0,
+    overdueTasks: 0,
+    completedTasks: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user && supabase) loadStats();
+  }, [user, supabase]);
+
+  async function loadStats() {
+    try {
+      setLoading(true);
+      const today = new Date().toISOString();
+
+      const { data: tasks } = (await supabase!
+        .from("tasks")
+        .select(
+          "id, due_date, stage:stages!inner(title, user_id, is_completed)",
+        )
+        .eq("stages.user_id", user!.id)) as any;
+
+      if (!tasks) return;
+      console.log(tasks[0]?.stage);
+
+      setStats({
+        totalTasks: tasks.length,
+        overdueTasks: tasks.filter(
+          (t: any) =>
+            t.due_date && t.due_date < today && !t.stage?.is_completed,
+        ).length,
+        completedTasks: tasks.filter((t: any) => t.stage?.is_completed === true)
+          .length,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { stats, loading };
 }

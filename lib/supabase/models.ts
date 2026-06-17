@@ -15,6 +15,7 @@ export interface Stage {
   sort_order: number;
   created_at: string;
   user_id: string;
+  is_completed: boolean;
 }
 
 export interface Task {

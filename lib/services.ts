@@ -90,14 +90,15 @@ export const stageService = {
     return data;
   },
 
-  async updateStageTitle(
+  async updateStage(
     supabase: SupabaseClient,
     stageId: number,
     title: string,
+    isCompleted: boolean,
   ): Promise<Stage> {
     const query = supabase
       .from("stages")
-      .update({ title })
+      .update({ title, is_completed: isCompleted })
       .eq("id", stageId)
       .select()
       .single();
@@ -206,10 +207,10 @@ export const boardDataServices = {
     });
 
     const defaultStages = [
-      { title: "To Do", sort_order: 0 },
-      { title: "In Progress", sort_order: 1 },
-      { title: "Review", sort_order: 2 },
-      { title: "Done", sort_order: 3 },
+      { title: "To Do", sort_order: 0, is_completed: false },
+      { title: "In Progress", sort_order: 1, is_completed: false },
+      { title: "Review", sort_order: 2, is_completed: false },
+      { title: "Done", sort_order: 3, is_completed: true },
     ];
 
     await Promise.all(
