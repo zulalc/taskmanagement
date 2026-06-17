@@ -21,8 +21,6 @@ function Stage({
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
 
-  const [isEditingStage, setIsEditingStage] = useState(false);
-
   return (
     <div
       ref={setNodeRef}
@@ -39,23 +37,9 @@ function Stage({
                 {stage.tasks.length}
               </Badge>
             </div>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              className="shrink-0 cursor-pointer"
-              onClick={() => setIsEditingStage(true)}
-            >
-              <MoreHorizontal />
-            </Button>
+            <EditStage stage={stage} boardId={boardId} />
           </div>
         </div>
-
-        <EditStage
-          stage={stage}
-          isEditingStage={isEditingStage}
-          setIsEditingStage={setIsEditingStage}
-          boardId={boardId}
-        />
 
         {/*Content*/}
         <div className="p-2">
