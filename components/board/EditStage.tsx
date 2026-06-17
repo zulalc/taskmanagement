@@ -7,26 +7,20 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useBoard } from "@/lib/hooks/useBoards";
 import { Button } from "../ui/button";
+import { MoreHorizontal } from "lucide-react";
+import { Checkbox } from "../ui/checkbox";
 
-function EditStage({
-  stage,
-  isEditingStage,
-  setIsEditingStage,
-  boardId,
-}: {
-  stage: Stage;
-  isEditingStage: boolean;
-  setIsEditingStage: React.Dispatch<React.SetStateAction<boolean>>;
-  boardId: string;
-}) {
+function EditStage({ stage, boardId }: { stage: Stage; boardId: string }) {
   const { updateStage } = useBoard(boardId);
-
+  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(stage.title);
+  const [isCompleted, setIsCompleted] = useState(stage.is_completed);
 
   async function handleUpdateStage(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,9 +30,9 @@ function EditStage({
     }
 
     try {
-      const result = await updateStage(stage.id, title.trim());
+      await updateStage(stage.id, title.trim());
 
-      setIsEditingStage(false);
+      setOpen(false);
       setTitle("");
     } catch (error) {
       console.error("Failed to update stage:", error);
@@ -46,7 +40,12 @@ function EditStage({
   }
   return (
     <div>
-      <Dialog open={isEditingStage} onOpenChange={setIsEditingStage}>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            <MoreHorizontal />
+          </Button>
+        </DialogTrigger>
         <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
           <DialogHeader>
             <DialogTitle>Edit Stage</DialogTitle>
@@ -68,12 +67,27 @@ function EditStage({
                 required
               />
             </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="is_completed"
+                checked={isCompleted}
+                onCheckedChange={(checked) =>
+                  setIsCompleted(checked as boolean)
+                }
+              />
+              <Label
+                htmlFor="is_completed"
+                className="cursor-pointer font-normal"
+              >
+                Mark as completion stage
+              </Label>
+            </div>
             <div className="flex justify-end space-x-2">
               <Button
                 type="button"
                 variant={"outline"}
                 className="cursor-pointer"
-                onClick={() => setIsEditingStage(false)}
+                onClick={() => setOpen(false)}
               >
                 Cancel
               </Button>

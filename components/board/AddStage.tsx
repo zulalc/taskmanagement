@@ -14,16 +14,18 @@ import { Input } from "../ui/input";
 import { Stage } from "@/lib/supabase/models";
 import { Plus } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
+import { Checkbox } from "../ui/checkbox";
 
 function AddStage({
   createStage,
   buttonVariant,
 }: {
-  createStage: (title: string) => Promise<Stage>;
+  createStage: (title: string, isCompleted: boolean) => Promise<Stage>;
   buttonVariant?: "ghost" | "default";
 }) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [isCompleted, setIsCompleted] = useState(false);
 
   async function handleCreateStage(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -31,7 +33,7 @@ function AddStage({
     if (!title.trim()) return;
 
     try {
-      await createStage(title);
+      await createStage(title, isCompleted);
 
       setTitle("");
       setOpen(false);
@@ -101,6 +103,20 @@ function AddStage({
               placeholder="Enter stage title"
               required
             />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="is_completed"
+              checked={isCompleted}
+              onCheckedChange={(checked) => setIsCompleted(checked as boolean)}
+            />
+            <Label
+              htmlFor="is_completed"
+              className="cursor-pointer font-normal"
+            >
+              Mark as completion stage
+            </Label>
           </div>
 
           <div className="flex justify-end gap-2">
