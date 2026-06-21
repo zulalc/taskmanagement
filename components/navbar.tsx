@@ -4,6 +4,7 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
+  SignOutButton,
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
@@ -54,8 +55,8 @@ function Navbar() {
                 <Button
                   className="
                     px-4 py-2
-                    rounded-full
-                    bg-[#008170]
+                    rounded-lg
+                    bg-brand-primary
                     hover:bg-[#006d5f]
                     text-white
                     text-sm font-medium
@@ -73,8 +74,8 @@ function Navbar() {
                   className="
                     flex items-center gap-2
                     px-4 py-2
-                    rounded-full
-                    bg-[#008170]
+                    rounded-lg
+                    bg-brand-primary 
                     hover:bg-[#006d5f]
                     text-white
                     text-sm font-medium
@@ -141,7 +142,9 @@ function Navbar() {
                   w-full px-3 py-3
                   rounded-lg
                   hover:bg-black/5
+                  hover:text-black/80
                   transition-colors
+                  cursor-pointer
                 "
               >
                 Sign In
@@ -156,7 +159,9 @@ function Navbar() {
                   w-full px-3 py-3
                   rounded-lg
                   hover:bg-black/5
+                  hover:text-black/80
                   transition-colors
+                  cursor-pointer
                 "
               >
                 Sign Up
@@ -172,9 +177,10 @@ function Navbar() {
                 flex items-center gap-3
                 px-3 py-3
                 rounded-lg
-                hover:bg-[#008170]/10
-                hover:text-[#008170]
+                hover:bg-brand-primary/10
+                hover:text-brand-primary
                 transition-colors
+                cursor-pointer
               "
             >
               Home
@@ -186,13 +192,29 @@ function Navbar() {
                 flex items-center gap-3
                 px-3 py-3
                 rounded-lg
-                hover:bg-[#008170]/10
-                hover:text-[#008170]
+                hover:bg-brand-primary/10
+                hover:text-brand-primary
                 transition-colors
               "
             >
               Dashboard
             </Link>
+            <SignOutButton>
+              <Button
+                onClick={() => setIsMenuOpen(false)}
+                className="
+                  flex items-center gap-3
+                  w-full px-3 py-3
+                  rounded-lg
+                  hover:bg-black/5
+                  hover:text-black/80
+                  transition-colors
+                  cursor-pointer
+                "
+              >
+                Sign Out
+              </Button>
+            </SignOutButton>
           </SignedIn>
         </div>
       </div>
