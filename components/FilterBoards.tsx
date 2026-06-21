@@ -41,16 +41,6 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
     (filters.dateRange.start ? 1 : 0) +
     (filters.dateRange.end ? 1 : 0);
 
-  function toggleFilter(
-    type: "title" | "dateRange",
-    value: string | string[] | null,
-  ) {
-    setFilters((prev) => ({
-      ...prev,
-      [type]: value,
-    }));
-  }
-
   function clearFilters() {
     setFilters({
       title: "",
@@ -65,14 +55,17 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant={"outline"}
-          size={"sm"}
-          className={`cursor-pointer text-xs sm:text-sm ${filterCount > 0 ? "bg-[#BFEAE4] border-[#008170] text-[#005F54] hover:bg-[#A8E0D8]" : ""}`}
-          onClick={() => setOpen(true)}
+          variant="outline"
+          size="sm"
+          className={`cursor-pointer text-xs sm:text-sm ${
+            filterCount > 0
+              ? "bg-brand-card-bg border-brand-primary text-brand-primary"
+              : "border-brand-mint"
+          }`}
         >
           <Filter className="w-3 h-3 sm:w-4 h:w-4 " /> Filter
           {filterCount > 0 && (
-            <Badge variant={"secondary"} className="text-xs">
+            <Badge className="text-xs text-white bg-brand-primary">
               {filterCount}
             </Badge>
           )}
@@ -80,8 +73,8 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
       </DialogTrigger>
       <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
         <DialogHeader>
-          <DialogTitle>Filter Boards</DialogTitle>
-          <p className="text-sm text-zinc-600">
+          <DialogTitle className="text-brand-dark">Filter Boards</DialogTitle>
+          <p className="text-sm" style={{ color: "#3a5a54" }}>
             Filter boards by title, start date or end date
           </p>
         </DialogHeader>
@@ -93,6 +86,7 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
               id="title"
               name="title"
               placeholder="Search board by title"
+              className="border border-brand-card-bg"
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, title: e.target.value }))
               }
@@ -102,10 +96,13 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
           <div className="space-y-2">
             <Label>Date Range</Label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div>
-                <Label className="text-xs">Start Date</Label>
+              <div className="space-y-1">
+                <Label className="text-xs" style={{ color: "#3a5a54" }}>
+                  Start Date
+                </Label>
                 <Input
                   type="date"
+                  className="border border-brand-card-bg"
                   onChange={(e) =>
                     setFilters((prev) => ({
                       ...prev,
@@ -117,10 +114,13 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
                   }
                 />
               </div>
-              <div>
-                <Label className="text-xs">End Date</Label>
+              <div className="space-y-1">
+                <Label className="text-xs" style={{ color: "#3a5a54" }}>
+                  End Date
+                </Label>
                 <Input
                   type="date"
+                  className="border border-brand-card-bg"
                   onChange={(e) =>
                     setFilters((prev) => ({
                       ...prev,
@@ -138,16 +138,16 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
           <div className="flex justify-between pt-4">
             <Button
               type="button"
-              variant={"outline"}
-              className="cursor-pointer"
+              variant="outline"
+              className="cursor-pointer border border-brand-primary text-brand-primary"
               onClick={clearFilters}
             >
               Clear Filters
             </Button>
             <Button
               type="button"
+              className="cursor-pointer bg-brand-primary"
               onClick={() => setOpen(false)}
-              className="cursor-pointer"
             >
               Apply Filters
             </Button>
