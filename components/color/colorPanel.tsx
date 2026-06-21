@@ -16,23 +16,27 @@ function ColorPanel({ value, onChange }: ColorPanelProps) {
     <>
       <div className="flex gap-3">
         {["Preset", "Custom"].map((tab) => (
-          <div
+          <Button
             key={tab}
-            className="relative h-7 w-16 flex justify-center items-center"
+            variant="outline"
+            type="button"
+            onClick={() => setSelectedTab(tab)}
+            className="text-xs h-7 px-4 transition-colors cursor-pointer"
+            style={
+              selectedTab === tab
+                ? {
+                    background: "var(--brand-primary)",
+                    color: "white",
+                    borderColor: "var(--brand-primary)",
+                  }
+                : {
+                    color: "var(--brand-dark)",
+                    borderColor: "var(--brand-card-bg)",
+                  }
+            }
           >
-            <Button
-              variant={"outline"}
-              type="button"
-              onClick={() => setSelectedTab(tab)}
-              className={`text-xs transition-colors ${
-                selectedTab === tab
-                  ? "text-zinc-100 bg-zinc-600"
-                  : "text-zinc-800"
-              }`}
-            >
-              {tab}
-            </Button>
-          </div>
+            {tab}
+          </Button>
         ))}
       </div>
 
