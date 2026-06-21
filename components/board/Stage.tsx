@@ -1,11 +1,8 @@
 "use client";
 import { StageWithTasks, taskData } from "@/lib/supabase/models";
-import { MoreHorizontal } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 import AddTask from "./AddTask";
 import { useDroppable } from "@dnd-kit/core";
-import { useState } from "react";
 import EditStage from "./EditStage";
 
 function Stage({

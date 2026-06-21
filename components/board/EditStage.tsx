@@ -30,10 +30,11 @@ function EditStage({ stage, boardId }: { stage: Stage; boardId: string }) {
     }
 
     try {
-      await updateStage(stage.id, title.trim());
+      await updateStage(stage.id, title.trim(), isCompleted);
 
       setOpen(false);
       setTitle("");
+      setIsCompleted(false);
     } catch (error) {
       console.error("Failed to update stage:", error);
     }
