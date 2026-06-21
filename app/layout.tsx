@@ -12,6 +12,7 @@ import Navbar from "@/components/navbar";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
 import ScrollToTop from "@/components/scrollToTop";
 import Footer from "@/components/footer";
+import { Toaster } from "sonner";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -45,6 +46,7 @@ export default function RootLayout({
               <ScrollToTop>{children}</ScrollToTop>
             </main>
             <Footer />
+            <Toaster />
           </SupabaseProvider>
         </body>
       </html>
