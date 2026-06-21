@@ -1,3 +1,4 @@
+import { BoardsProvider } from "@/lib/contexts/BoardsContext";
 import { PlanProvider } from "@/lib/contexts/PlanContext";
 import { auth } from "@clerk/nextjs/server";
 export default async function DashboardLayout({
@@ -11,7 +12,7 @@ export default async function DashboardLayout({
 
   return (
     <PlanProvider hasProPlan={hasProPlan} hasEnterprisePlan={hasEnterprisePlan}>
-      {children}
+      <BoardsProvider>{children}</BoardsProvider>
     </PlanProvider>
   );
 }
