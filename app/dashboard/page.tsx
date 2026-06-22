@@ -1,9 +1,11 @@
 "use client";
 import CreateBoard from "@/components/board/CreateBoard";
+import DeleteBoard from "@/components/board/DeleteBoard";
 import FilterBoards from "@/components/FilterBoards";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useBoardsContext } from "@/lib/contexts/BoardsContext";
 import { usePlan } from "@/lib/contexts/PlanContext";
 import { useDashboardStats } from "@/lib/hooks/useBoards";
 import {
@@ -18,7 +20,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useBoardsContext } from "@/lib/contexts/BoardsContext";
 
 function Page() {
   const { boards, loading, error } = useBoardsContext();
@@ -230,12 +231,24 @@ function Page() {
                           style={{ background: board.color }}
                         />
                       </div>
-                      {isNew(board.created_at) && (
-                        <Badge className="text-xs bg-brand-card-bg text-brand-primary border-none">
-                          New
-                        </Badge>
-                      )}
+
+                      <div className="flex items-center gap-2">
+                        {isNew(board.created_at) && (
+                          <Badge className="text-xs bg-brand-card-bg text-brand-primary border-none">
+                            New
+                          </Badge>
+                        )}
+                        <div
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                        >
+                          <DeleteBoard boardId={board.id} buttonSize="xs" />
+                        </div>
+                      </div>
                     </div>
+
                     <p className="font-semibold text-sm mb-1 text-brand-dark group-hover:transition-colors">
                       {board.title}
                     </p>
@@ -300,6 +313,14 @@ function Page() {
                     <p className="text-xs" style={{ color: "#7aada3" }}>
                       Updated {new Date(board.updated_at).toLocaleDateString()}
                     </p>
+                  </div>
+                  <div
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  >
+                    <DeleteBoard boardId={board.id} buttonSize="sm" />
                   </div>
                 </div>
               </Link>

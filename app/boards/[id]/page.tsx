@@ -1,10 +1,10 @@
 "use client";
 
-import AddTask from "@/components/board/AddTask";
+import AddTask from "@/components/task/AddTask";
 import EditBoard from "@/components/board/EditBoard";
-import FilterTasks from "@/components/board/FilterTasks";
-import Stage from "@/components/board/Stage";
-import TaskCard from "@/components/board/TaskCard";
+import FilterTasks from "@/components/task/FilterTasks";
+import Stage from "@/components/stage/Stage";
+import TaskCard from "@/components/task/TaskCard";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { useBoard } from "@/lib/hooks/useBoards";
 import { Task, taskData } from "@/lib/supabase/models";
@@ -23,7 +23,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useDragHandlers } from "@/lib/hooks/useDragHandlers";
-import AddStage from "@/components/board/AddStage";
+import AddStage from "@/components/stage/AddStage";
+import DeleteBoard from "@/components/board/DeleteBoard";
 
 export default function BoardPage() {
   const { id } = useParams() as { id: string };
@@ -97,7 +98,6 @@ export default function BoardPage() {
 
     try {
       await createTask(taskData);
-      console.log("Task created successfully!");
     } catch (error) {
       console.error("Failed to create task:", error);
     }
@@ -114,6 +114,7 @@ export default function BoardPage() {
           <div className="flex items-center gap-1">
             <FilterTasks filters={filters} setFilters={setFilters} />
             <EditBoard boardId={id} />
+            <DeleteBoard boardId={id} buttonSize="sm" />
           </div>
         </div>
 

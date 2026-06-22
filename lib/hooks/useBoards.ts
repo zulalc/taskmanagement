@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { Board, StageWithTasks, Task, taskData } from "../supabase/models";
 import { useSupabase } from "../supabase/SupabaseProvider";
+import { toast } from "sonner";
 
 export function useBoards() {
   const { user } = useUser();
@@ -58,12 +59,21 @@ export function useBoards() {
       );
 
       setBoards((prev) => [newBoard, ...prev]);
+      toast.success("Board created successfully!");
+      return newBoard;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create board.");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create board.",
+      );
     }
   }
 
-  return { boards, loading, error, createBoard };
+  function removeBoard(boardId: string) {
+    setBoards((prev) => prev.filter((b) => b.id !== boardId));
+  }
+
+  return { boards, loading, error, createBoard, removeBoard };
 }
 
 export function useBoard(boardId: string) {
@@ -110,9 +120,21 @@ export function useBoard(boardId: string) {
         updates,
       );
       setBoard(updatedBoard);
+      toast.success("Board updated successfully!");
       return updatedBoard;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update board.");
+    }
+  }
+
+  async function deleteBoard(boardId: string) {
+    try {
+      await boardService.deleteBoard(supabase!, boardId);
+      setBoard(null);
+      setStages([]);
+      toast.success("Board deleted successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete board.");
     }
   }
 
@@ -140,6 +162,8 @@ export function useBoard(boardId: string) {
             : stage,
         ),
       );
+      toast.success("Task created successfully!");
+
       return newTask;
     } catch (error) {
       console.error("CREATE TASK ERROR:", error);
@@ -148,6 +172,9 @@ export function useBoard(boardId: string) {
         error instanceof Error ? error.message : "Failed to create task.",
       );
 
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create task.",
+      );
       throw error;
     }
   }
@@ -168,16 +195,6 @@ export function useBoard(boardId: string) {
         let oldStageId: number | null = null;
 
         for (const stage of newStages) {
-          console.log(
-            "Checking stage:",
-            stage.id,
-            "Tasks:",
-            stage.tasks.map((t) => ({
-              id: t.id,
-              title: t.title,
-            })),
-          );
-
           const taskIndex = stage.tasks.findIndex(
             (task) => Number(task.id) === taskId,
           );
@@ -193,7 +210,7 @@ export function useBoard(boardId: string) {
         }
 
         if (!taskToMove) {
-          console.error("Task was NOT found in any stage");
+          toast.error("Task was NOT found in any stage");
         }
 
         const targetStage = newStages.find(
@@ -204,9 +221,8 @@ export function useBoard(boardId: string) {
           targetStage.tasks.splice(newOrder, 0, taskToMove);
         } else {
           console.error("Move failed:");
-          console.error("taskToMove:", taskToMove);
-          console.error("targetStage:", targetStage);
         }
+        toast.success("Task moved successfully!");
 
         return newStages;
       });
@@ -230,6 +246,8 @@ export function useBoard(boardId: string) {
       });
 
       setStages((prev) => [...prev, { ...newStage, tasks: [] }]);
+      toast.success("Stage created successfully!");
+
       return newStage;
     } catch (error) {
       setError(
@@ -259,6 +277,7 @@ export function useBoard(boardId: string) {
 
         return updated;
       });
+      toast.success("Stage updated successfully!");
 
       return updatedStage;
     } catch (err) {
@@ -273,6 +292,7 @@ export function useBoard(boardId: string) {
     loading,
     error,
     updateBoard,
+    deleteBoard,
     createTaskHook,
     setStages,
     moveTask,
@@ -308,7 +328,6 @@ export function useDashboardStats() {
         .eq("stages.user_id", user!.id)) as any;
 
       if (!tasks) return;
-      console.log(tasks[0]?.stage);
 
       setStats({
         totalTasks: tasks.length,

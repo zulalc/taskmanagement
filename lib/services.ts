@@ -60,6 +60,15 @@ export const boardService = {
 
     return data;
   },
+
+  async deleteBoard(supabase: SupabaseClient, boardId: string): Promise<void> {
+    const { error, count } = await supabase
+      .from("boards")
+      .delete({ count: "exact" })
+      .eq("id", boardId);
+    if (error) throw error;
+    if (count === 0) throw new Error(`Board ${boardId} not found`);
+  },
 };
 
 export const stageService = {
