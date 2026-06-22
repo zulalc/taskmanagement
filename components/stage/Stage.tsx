@@ -1,7 +1,7 @@
 "use client";
 import { StageWithTasks, taskData } from "@/lib/supabase/models";
 import { Badge } from "../ui/badge";
-import AddTask from "./AddTask";
+import AddTask from "../task/AddTask";
 import { useDroppable } from "@dnd-kit/core";
 import EditStage from "./EditStage";
 

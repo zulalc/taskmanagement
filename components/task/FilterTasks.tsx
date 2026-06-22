@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
-import { priorityOptions } from "./AddTask";
+import { priorityOptions } from "../task/AddTask";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Filter } from "lucide-react";
