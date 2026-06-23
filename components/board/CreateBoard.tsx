@@ -50,6 +50,7 @@ function CreateBoard({
       setColor("#008170");
       setDescription("");
       setOpen(false);
+      router.push("/dashboard");
     } catch (error) {
       console.error("Failed to create board:", error);
     }

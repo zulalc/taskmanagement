@@ -162,8 +162,19 @@ function AddTask({
               />
             </div>
 
-            <div className="flex justify-end space-y-2 pt-4">
-              <Button type="submit">Create Task</Button>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+
+              <Button type="submit" className="cursor-pointer">
+                Create Task
+              </Button>
             </div>
           </form>
         </DialogContent>

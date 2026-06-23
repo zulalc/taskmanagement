@@ -123,12 +123,15 @@ function AddStage({
             <Button
               type="button"
               variant="outline"
+              className="cursor-pointer"
               onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
 
-            <Button type="submit">Create Stage</Button>
+            <Button type="submit" className="cursor-pointer">
+              Create Stage
+            </Button>
           </div>
         </form>
       </DialogContent>

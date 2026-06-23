@@ -43,7 +43,7 @@ function EditStage({ stage, boardId }: { stage: Stage; boardId: string }) {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" className="cursor-pointer">
+          <Button variant="outline" size="xs" className="cursor-pointer">
             <MoreHorizontal />
           </Button>
         </DialogTrigger>
