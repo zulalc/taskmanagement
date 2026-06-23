@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import AddTask from "../task/AddTask";
 import { useDroppable } from "@dnd-kit/core";
 import EditStage from "./EditStage";
+import DeleteStage from "./DeleteStage";
 
 function Stage({
   stage,
@@ -34,7 +35,10 @@ function Stage({
                 {stage.tasks.length}
               </Badge>
             </div>
-            <EditStage stage={stage} boardId={boardId} />
+            <div className="flex items-center gap-1">
+              <EditStage stage={stage} boardId={boardId} />
+              <DeleteStage stageId={stage.id} />
+            </div>
           </div>
         </div>
 

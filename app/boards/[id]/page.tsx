@@ -6,7 +6,6 @@ import FilterTasks from "@/components/task/FilterTasks";
 import Stage from "@/components/stage/Stage";
 import TaskCard from "@/components/task/TaskCard";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import { useBoard } from "@/lib/hooks/useBoards";
 import { Task, taskData } from "@/lib/supabase/models";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -25,11 +24,13 @@ import {
 import { useDragHandlers } from "@/lib/hooks/useDragHandlers";
 import AddStage from "@/components/stage/AddStage";
 import DeleteBoard from "@/components/board/DeleteBoard";
+import { BoardProvider } from "@/lib/contexts/BoardContext";
+import { useBoardContext } from "@/lib/contexts/BoardContext";
 
-export default function BoardPage() {
-  const { id } = useParams() as { id: string };
+function BoardPageContent() {
   const { board, stages, createTaskHook, setStages, moveTask, createStage } =
-    useBoard(id);
+    useBoardContext();
+  const { id } = useParams() as { id: string };
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { handleDragStart, handleDragOver, handleDragEnd } = useDragHandlers({
     stages,
@@ -118,7 +119,6 @@ export default function BoardPage() {
           </div>
         </div>
 
-        {/*Board Content*/}
         <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
@@ -180,5 +180,15 @@ export default function BoardPage() {
         </main>
       </main>
     </div>
+  );
+}
+
+export default function BoardPage() {
+  const { id } = useParams() as { id: string };
+
+  return (
+    <BoardProvider boardId={id}>
+      <BoardPageContent />
+    </BoardProvider>
   );
 }

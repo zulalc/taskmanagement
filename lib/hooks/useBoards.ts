@@ -138,6 +138,77 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function createStage(title: string, isCompleted: boolean) {
+    if (!board || !user) throw new Error("Board or user not found");
+
+    try {
+      const newStage = await stageService.createStage(supabase!, {
+        title,
+        board_id: board.id,
+        sort_order: stages.length,
+        user_id: user.id,
+        is_completed: isCompleted,
+      });
+
+      setStages((prev) => [...prev, { ...newStage, tasks: [] }]);
+      toast.success("Stage created successfully!");
+
+      return newStage;
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to create stage.",
+      );
+      throw error;
+    }
+  }
+
+  async function updateStage(
+    stageId: number,
+    title: string,
+    isCompleted: boolean,
+  ) {
+    try {
+      const updatedStage = await stageService.updateStage(
+        supabase!,
+        stageId,
+        title,
+        isCompleted,
+      );
+
+      setStages((prev) => {
+        const updated = prev.map((stage) =>
+          stage.id === stageId ? { ...stage, ...updatedStage } : stage,
+        );
+
+        return updated;
+      });
+      toast.success("Stage updated successfully!");
+
+      return updatedStage;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update stage.");
+
+      throw err;
+    }
+  }
+
+  async function deleteStage(stageId: number) {
+    console.log(
+      "stages before delete:",
+      stages.map((s) => s.id),
+    );
+    await stageService.deleteStage(supabase!, stageId);
+    setStages((prev) => {
+      console.log(
+        "filtering:",
+        prev.map((s) => s.id),
+        "removing:",
+        stageId,
+      );
+      return prev.filter((s) => Number(s.id) !== Number(stageId));
+    });
+  }
+
   async function createTaskHook(stageId: number, taskData: taskData) {
     try {
       const rawPriority = (taskData.priority || "Medium").toLowerCase();
@@ -233,59 +304,6 @@ export function useBoard(boardId: string) {
     }
   }
 
-  async function createStage(title: string, isCompleted: boolean) {
-    if (!board || !user) throw new Error("Board or user not found");
-
-    try {
-      const newStage = await stageService.createStage(supabase!, {
-        title,
-        board_id: board.id,
-        sort_order: stages.length,
-        user_id: user.id,
-        is_completed: isCompleted,
-      });
-
-      setStages((prev) => [...prev, { ...newStage, tasks: [] }]);
-      toast.success("Stage created successfully!");
-
-      return newStage;
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to create stage.",
-      );
-      throw error;
-    }
-  }
-
-  async function updateStage(
-    stageId: number,
-    title: string,
-    isCompleted: boolean,
-  ) {
-    try {
-      const updatedStage = await stageService.updateStage(
-        supabase!,
-        stageId,
-        title,
-        isCompleted,
-      );
-
-      setStages((prev) => {
-        const updated = prev.map((stage) =>
-          stage.id === stageId ? { ...stage, ...updatedStage } : stage,
-        );
-
-        return updated;
-      });
-      toast.success("Stage updated successfully!");
-
-      return updatedStage;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update stage.");
-
-      throw err;
-    }
-  }
   return {
     board,
     stages,
@@ -298,6 +316,7 @@ export function useBoard(boardId: string) {
     moveTask,
     createStage,
     updateStage,
+    deleteStage,
   };
 }
 

@@ -118,6 +118,15 @@ export const stageService = {
 
     return data;
   },
+
+  async deleteStage(supabase: SupabaseClient, stageId: number): Promise<void> {
+    const { error, count } = await supabase
+      .from("stages")
+      .delete({ count: "exact" })
+      .eq("id", stageId);
+    if (error) throw error;
+    if (count === 0) throw new Error(`Stage ${stageId} not found`);
+  },
 };
 
 export const taskService = {
@@ -174,6 +183,15 @@ export const taskService = {
     if (error) throw error;
 
     return data;
+  },
+
+  async deleteTask(supabase: SupabaseClient, taskId: number): Promise<void> {
+    const { error, count } = await supabase
+      .from("tasks")
+      .delete({ count: "exact" })
+      .eq("id", taskId);
+    if (error) throw error;
+    if (count === 0) throw new Error(`Task ${taskId} not found`);
   },
 };
 
