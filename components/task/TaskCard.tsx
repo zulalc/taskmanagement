@@ -3,6 +3,7 @@ import { Card, CardContent } from "../ui/card";
 import { Calendar, User } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import DeleteTask from "./DeleteTask";
 
 function TaskCard({ task }: { task: Task }) {
   const {
@@ -43,6 +44,7 @@ function TaskCard({ task }: { task: Task }) {
               <h4 className="font-medium text-zinc-900 text-sm leading-tight flex-1 min-w-0 pr-2">
                 {task.title}
               </h4>
+              <DeleteTask taskId={task.id} />
             </div>
 
             <p className="text-xs text-zinc-600 line-clamp-2">

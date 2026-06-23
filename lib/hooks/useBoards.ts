@@ -193,20 +193,15 @@ export function useBoard(boardId: string) {
   }
 
   async function deleteStage(stageId: number) {
-    console.log(
-      "stages before delete:",
-      stages.map((s) => s.id),
-    );
-    await stageService.deleteStage(supabase!, stageId);
-    setStages((prev) => {
-      console.log(
-        "filtering:",
-        prev.map((s) => s.id),
-        "removing:",
-        stageId,
-      );
-      return prev.filter((s) => Number(s.id) !== Number(stageId));
-    });
+    try {
+      await stageService.deleteStage(supabase!, stageId);
+      setStages((prev) => {
+        return prev.filter((s) => Number(s.id) !== Number(stageId));
+      });
+      toast.success("Board deleted successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete board.");
+    }
   }
 
   async function createTaskHook(stageId: number, taskData: taskData) {
@@ -237,8 +232,6 @@ export function useBoard(boardId: string) {
 
       return newTask;
     } catch (error) {
-      console.error("CREATE TASK ERROR:", error);
-
       setError(
         error instanceof Error ? error.message : "Failed to create task.",
       );
@@ -304,6 +297,21 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function deleteTask(taskId: number) {
+    try {
+      await taskService.deleteTask(supabase!, taskId);
+      setStages((prev) =>
+        prev.map((stage) => ({
+          ...stage,
+          tasks: stage.tasks.filter((t) => Number(t.id) !== Number(taskId)),
+        })),
+      );
+      toast.success("Task deleted successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete task.");
+    }
+  }
+
   return {
     board,
     stages,
@@ -311,12 +319,13 @@ export function useBoard(boardId: string) {
     error,
     updateBoard,
     deleteBoard,
-    createTaskHook,
     setStages,
-    moveTask,
     createStage,
     updateStage,
     deleteStage,
+    createTaskHook,
+    moveTask,
+    deleteTask,
   };
 }
 
