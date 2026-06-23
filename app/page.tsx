@@ -121,7 +121,7 @@ export default function Home() {
             {isSignedIn ? (
               <button
                 onClick={() => router.push("/dashboard")}
-                className="bg-brand-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm transition-opacity hover:opacity-90"
+                className="bg-brand-primary inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-sm transition-opacity hover:opacity-90 cursor-pointer"
               >
                 Go to your boards <ArrowRight className="w-4 h-4" />
               </button>
