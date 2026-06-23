@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBoardsContext } from "@/lib/contexts/BoardsContext";
 import { usePlan } from "@/lib/contexts/PlanContext";
-import { useDashboardStats } from "@/lib/hooks/useBoards";
 import {
   AlertCircle,
   CheckCircle,
@@ -22,8 +21,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 function Page() {
-  const { boards, loading, error } = useBoardsContext();
-  const { stats } = useDashboardStats();
+  const { boards, stats, refreshStats, loading, error } = useBoardsContext();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { isFreeUser } = usePlan();
 

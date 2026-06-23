@@ -17,6 +17,12 @@ export function useBoards() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState({
+    totalBoards: 0,
+    totalTasks: 0,
+    overdueTasks: 0,
+    completedTasks: 0,
+  });
 
   useEffect(() => {
     if (user) {
@@ -73,7 +79,47 @@ export function useBoards() {
     setBoards((prev) => prev.filter((b) => b.id !== boardId));
   }
 
-  return { boards, loading, error, createBoard, removeBoard };
+  async function loadStats() {
+    try {
+      const today = new Date().toISOString();
+
+      const { data: tasks } = (await supabase!
+        .from("tasks")
+        .select(
+          "id, due_date, stage:stages!inner(title, user_id, is_completed)",
+        )
+        .eq("stages.user_id", user!.id)) as any;
+
+      if (!tasks) return;
+
+      setStats({
+        totalBoards: boards.length,
+        totalTasks: tasks.length,
+        overdueTasks: tasks.filter(
+          (t: any) =>
+            t.due_date && t.due_date < today && !t.stage?.is_completed,
+        ).length,
+        completedTasks: tasks.filter((t: any) => t.stage?.is_completed === true)
+          .length,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load stats.");
+    }
+  }
+
+  useEffect(() => {
+    setStats((prev) => ({ ...prev, totalBoards: boards.length }));
+  }, [boards]);
+
+  return {
+    boards,
+    loading,
+    error,
+    createBoard,
+    removeBoard,
+    stats,
+    refreshStats: loadStats,
+  };
 }
 
 export function useBoard(boardId: string) {
@@ -327,49 +373,4 @@ export function useBoard(boardId: string) {
     moveTask,
     deleteTask,
   };
-}
-
-export function useDashboardStats() {
-  const { supabase } = useSupabase();
-  const { user } = useUser();
-  const [stats, setStats] = useState({
-    totalTasks: 0,
-    overdueTasks: 0,
-    completedTasks: 0,
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user && supabase) loadStats();
-  }, [user, supabase]);
-
-  async function loadStats() {
-    try {
-      setLoading(true);
-      const today = new Date().toISOString();
-
-      const { data: tasks } = (await supabase!
-        .from("tasks")
-        .select(
-          "id, due_date, stage:stages!inner(title, user_id, is_completed)",
-        )
-        .eq("stages.user_id", user!.id)) as any;
-
-      if (!tasks) return;
-
-      setStats({
-        totalTasks: tasks.length,
-        overdueTasks: tasks.filter(
-          (t: any) =>
-            t.due_date && t.due_date < today && !t.stage?.is_completed,
-        ).length,
-        completedTasks: tasks.filter((t: any) => t.stage?.is_completed === true)
-          .length,
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return { stats, loading };
 }
