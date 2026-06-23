@@ -2,21 +2,21 @@ import { Button } from "../ui/button";
 import { ViewProps } from "./customView";
 
 const colors = [
-  "#FF0000",
-  "#00FFFF",
-  "#00008B",
-  "#800080",
-  "#FFFF00",
-  "#00FF00",
-  "#008000",
-  "#808000",
-  "#FF00FF",
-  "#FFC0CB",
-  "#808080",
-  "#FFA500",
-  "#A52A2A",
-  "#800000",
-  "#7FFFD4",
+  "#FFFFFF",
+  "#F5F5F5",
+  "#D1D5DB",
+  "#000000",
+  "#EF4444",
+  "#F97316",
+  "#EAB308",
+  "#22C55E",
+  "#14B8A6",
+  "#06B6D4",
+  "#3B82F6",
+  "#6366F1",
+  "#8B5CF6",
+  "#EC4899",
+  "#A16207",
 ];
 
 function PresetView({ value, onChange }: ViewProps) {
