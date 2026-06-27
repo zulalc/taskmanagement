@@ -20,8 +20,7 @@ import {
 } from "../ui/select";
 import { useEffect, useState } from "react";
 import { taskData } from "@/lib/supabase/models";
-import { useParams } from "next/navigation";
-import { useBoard } from "@/lib/hooks/useBoards";
+import { useBoardContext } from "@/lib/contexts/BoardContext";
 
 export const priorityOptions = ["High", "Medium", "Low"];
 
@@ -35,9 +34,7 @@ function AddTask({
   targetStageId?: number;
 }) {
   const [open, setOpen] = useState(false);
-
-  const { id } = useParams() as { id: string };
-  const { stages } = useBoard(id);
+  const { stages } = useBoardContext();
   const [stageId, setStageId] = useState<string>("");
 
   useEffect(() => {
@@ -74,7 +71,7 @@ function AddTask({
             variant={buttonVariant}
             className={
               buttonVariant === "ghost"
-                ? "w-full mt-3 text-zinc-500 hover:text-gray-700 cursor-pointer"
+                ? `w-full mt-3 cursor-pointer`
                 : "w-full sm:w-auto cursor-pointer"
             }
           >

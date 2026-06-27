@@ -11,13 +11,13 @@ import {
 } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useBoard } from "@/lib/hooks/useBoards";
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
+import { useBoardContext } from "@/lib/contexts/BoardContext";
 
 function EditStage({ stage, boardId }: { stage: Stage; boardId: string }) {
-  const { updateStage } = useBoard(boardId);
+  const { updateStage } = useBoardContext();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(stage.title);
   const [isCompleted, setIsCompleted] = useState(stage.is_completed);

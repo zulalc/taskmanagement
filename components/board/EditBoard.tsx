@@ -12,12 +12,12 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useBoard } from "@/lib/hooks/useBoards";
 import { MoreHorizontal } from "lucide-react";
+import { useBoardContext } from "@/lib/contexts/BoardContext";
 
 function EditBoard({ boardId }: { boardId: string }) {
   const [open, setOpen] = useState(false);
-  const { board, updateBoard } = useBoard(boardId);
+  const { board, updateBoard } = useBoardContext();
   const [newTitle, setNewTitle] = useState("");
   const [newColor, setNewColor] = useState("#008170");
 
