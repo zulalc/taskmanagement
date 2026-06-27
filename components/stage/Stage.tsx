@@ -11,24 +11,30 @@ function Stage({
   children,
   onCreateTask,
   boardId,
+  boardColor,
 }: {
   stage: StageWithTasks;
   children: React.ReactNode;
   onCreateTask: (taskData: taskData) => Promise<void>;
   boardId: string;
+  boardColor?: string;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id });
 
   return (
     <div
       ref={setNodeRef}
-      className={`*:w-full lg:shrink-0 lg:w-80 ${isOver ? "ring-2 ring-[#008170] rounded-lg" : ""} `}
+      className={`*:w-full lg:shrink-0 lg:w-80 ${isOver ? "ring-2 ring-brand-primary rounded-xl" : ""}`}
     >
-      <div className="bg-white rounded-lg shadow-sm border">
-        <div className="p-3 sm:p-4 border-b">
+      <div className="bg-white rounded-xl border border-brand-card-bg shadow-sm">
+        <div className="px-4 py-3 border-b border-brand-card-bg">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 min-w-0">
-              <h3 className="font-semibold text-zinc-900 text-sm sm:text-base truncate">
+              {stage.is_completed && (
+                <div className="w-2 h-2 rounded-full bg-brand-primary shrink-0" />
+              )}
+
+              <h3 className="font-semibold text-sm sm:text-base truncate">
                 {stage.title}
               </h3>
               <Badge variant={"secondary"} className="text-xs shrink-0">
@@ -43,7 +49,14 @@ function Stage({
         </div>
 
         {/*Content*/}
-        <div className="p-2">
+        <div
+          className="p-2 rounded-b-xl"
+          style={{
+            background: boardColor
+              ? boardColor + "15"
+              : "var(--color-brand-tint)",
+          }}
+        >
           {children}
           <AddTask
             onSubmit={onCreateTask}
