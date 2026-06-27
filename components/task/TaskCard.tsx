@@ -4,6 +4,7 @@ import { Calendar, User } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import DeleteTask from "./DeleteTask";
+import EditTask from "./EditTask";
 
 function TaskCard({ task }: { task: Task }) {
   const {
@@ -36,15 +37,18 @@ function TaskCard({ task }: { task: Task }) {
 
   return (
     <div ref={setNodeRef} style={styles} {...attributes} {...listeners}>
-      <Card className="cursor-pointer hover:shadow-md transition-shadow">
+      <Card className="cursor-grab active:cursor-grabbing hover:shadow-md transition-all border-brand-card-bg mb-2">
         <CardContent className="p-3 sm:p-4">
           <div className="space-y-2 sm:space-y-3">
             {/*HEADER*/}
             <div className="flex items-start justify-between">
-              <h4 className="font-medium text-zinc-900 text-sm leading-tight flex-1 min-w-0 pr-2">
+              <h4 className="font-medium text-brand-dark text-sm leading-tight flex-1 min-w-0">
                 {task.title}
               </h4>
-              <DeleteTask taskId={task.id} />
+              <div className="flex items-end gap-1">
+                <EditTask task={task} />
+                <DeleteTask taskId={task.id} />
+              </div>
             </div>
 
             <p className="text-xs text-zinc-600 line-clamp-2">

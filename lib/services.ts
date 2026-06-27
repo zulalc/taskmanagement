@@ -1,4 +1,4 @@
-import { Board, Stage, Task } from "./supabase/models";
+import { Board, Stage, Task, taskData } from "./supabase/models";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export const boardService = {
@@ -183,6 +183,29 @@ export const taskService = {
     if (error) throw error;
 
     return data;
+  },
+
+  async updateTask(
+    supabase: SupabaseClient,
+    taskId: number,
+    data: taskData,
+  ): Promise<Task> {
+    const { data: updated, error } = await supabase
+      .from("tasks")
+      .update({
+        title: data.title,
+        description: data.description,
+        assignee: data.assignee,
+        due_date: data.due_date,
+        priority: data.priority,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", taskId)
+      .select("*, stages(board_id)")
+      .single();
+
+    if (error) throw error;
+    return updated;
   },
 
   async deleteTask(supabase: SupabaseClient, taskId: number): Promise<void> {

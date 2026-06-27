@@ -17,12 +17,6 @@ export function useBoards() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [stats, setStats] = useState({
-    totalBoards: 0,
-    totalTasks: 0,
-    overdueTasks: 0,
-    completedTasks: 0,
-  });
 
   useEffect(() => {
     if (user) {
@@ -79,8 +73,32 @@ export function useBoards() {
     setBoards((prev) => prev.filter((b) => b.id !== boardId));
   }
 
+  return {
+    boards,
+    loading,
+    error,
+    createBoard,
+    removeBoard,
+  };
+}
+
+export function useDashboardStats() {
+  const { supabase } = useSupabase();
+  const { user } = useUser();
+  const [stats, setStats] = useState({
+    totalTasks: 0,
+    overdueTasks: 0,
+    completedTasks: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user && supabase) loadStats();
+  }, [user, supabase]);
+
   async function loadStats() {
     try {
+      setLoading(true);
       const today = new Date().toISOString();
 
       const { data: tasks } = (await supabase!
@@ -93,7 +111,6 @@ export function useBoards() {
       if (!tasks) return;
 
       setStats({
-        totalBoards: boards.length,
         totalTasks: tasks.length,
         overdueTasks: tasks.filter(
           (t: any) =>
@@ -102,24 +119,12 @@ export function useBoards() {
         completedTasks: tasks.filter((t: any) => t.stage?.is_completed === true)
           .length,
       });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load stats.");
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(() => {
-    setStats((prev) => ({ ...prev, totalBoards: boards.length }));
-  }, [boards]);
-
-  return {
-    boards,
-    loading,
-    error,
-    createBoard,
-    removeBoard,
-    stats,
-    refreshStats: loadStats,
-  };
+  return { stats, loading };
 }
 
 export function useBoard(boardId: string) {
@@ -343,6 +348,30 @@ export function useBoard(boardId: string) {
     }
   }
 
+  async function updateTask(taskId: number, data: taskData) {
+    try {
+      const updatedTask = await taskService.updateTask(supabase!, taskId, data);
+
+      setStages((prev) => {
+        const newStages = prev.map((stage) => ({
+          ...stage,
+          tasks: stage.tasks.map((t) => {
+            if (Number(t.id) === Number(taskId)) {
+              return { ...t, ...updatedTask };
+            }
+            return t;
+          }),
+        }));
+        return newStages;
+      });
+
+      toast.success("Task updated successfully!");
+      return updatedTask;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async function deleteTask(taskId: number) {
     try {
       await taskService.deleteTask(supabase!, taskId);
@@ -371,6 +400,7 @@ export function useBoard(boardId: string) {
     deleteStage,
     createTaskHook,
     moveTask,
+    updateTask,
     deleteTask,
   };
 }
