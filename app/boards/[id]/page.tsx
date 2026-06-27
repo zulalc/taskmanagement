@@ -156,6 +156,7 @@ function BoardPageContent() {
                   stage={stage}
                   onCreateTask={createTask}
                   boardId={id}
+                  boardColor={board?.color}
                 >
                   <SortableContext
                     items={stage.tasks.map((t) => t.id)}

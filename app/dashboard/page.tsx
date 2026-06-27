@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBoardsContext } from "@/lib/contexts/BoardsContext";
 import { usePlan } from "@/lib/contexts/PlanContext";
+import { useDashboardStats } from "@/lib/hooks/useBoards";
 import {
   AlertCircle,
   CheckCircle,
@@ -21,7 +22,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 function Page() {
-  const { boards, stats, refreshStats, loading, error } = useBoardsContext();
+  const { boards, loading, error } = useBoardsContext();
+  const { stats } = useDashboardStats();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { isFreeUser } = usePlan();
 
@@ -157,9 +159,9 @@ function Page() {
               Your Boards
             </h2>
             {isFreeUser && (
-              <p className="text-xs mt-0.5" style={{ color: "#7aada3" }}>
+              <span className="text-xs mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-card-bg text-brand-primary font-medium">
                 Free plan · {boards.length} / 1 board used
-              </p>
+              </span>
             )}
           </div>
 
