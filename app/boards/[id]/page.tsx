@@ -119,6 +119,12 @@ function BoardPageContent() {
           </div>
         </div>
 
+        {board?.description && (
+          <p className="text-sm text-zinc-400 -mt-4 mb-6">
+            {board.description}
+          </p>
+        )}
+
         <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
