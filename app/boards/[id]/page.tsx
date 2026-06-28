@@ -13,6 +13,7 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  TouchSensor,
   rectIntersection,
   useSensor,
   useSensors,
@@ -43,6 +44,12 @@ function BoardPageContent() {
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200, // ms hold before drag starts
+        tolerance: 8, // px finger can move during the delay
       },
     }),
   );
