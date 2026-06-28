@@ -23,16 +23,6 @@ const features = [
     desc: "Changes to tasks and boards reflect immediately — no refreshing, no guessing.",
   },
   {
-    icon: Clock,
-    title: "Due Dates & Reminders",
-    desc: "Never miss a deadline with smart reminders that surface at the right time.",
-  },
-  {
-    icon: BarChart3,
-    title: "Progress Tracking",
-    desc: "See how work is moving across every project at a glance.",
-  },
-  {
     icon: MousePointerClick,
     title: "Quick Actions",
     desc: "Create, move, and close tasks without breaking your flow.",
@@ -114,8 +104,9 @@ export default function Home() {
             className="text-lg leading-relaxed mb-8 max-w-md"
             style={{ color: "#3a5a54" }}
           >
-            ZC-TASK gives you one place to plan, track, and ship work - no
-            matter how big or small your project is.
+            ZC-TASK gives you one place to organize, track, and complete your
+            work—whether you're managing a simple to-do list or a complex
+            project.
           </p>
           <div className="flex flex-wrap gap-3">
             {isSignedIn ? (
