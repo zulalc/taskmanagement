@@ -116,7 +116,7 @@ function Page() {
               iconColor: "#7c3aed",
             },
             {
-              label: "Overdue",
+              label: "Overdue Tasks",
               value: stats.overdueTasks,
               icon: AlertCircle,
               iconBg: "#fee2e2",
@@ -159,7 +159,7 @@ function Page() {
               Your Boards
             </h2>
             {isFreeUser && (
-              <span className="text-xs mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-card-bg text-brand-primary font-medium">
+              <span className="text-xs mt-0.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-300/10 text-red-600 font-medium">
                 Free plan · {boards.length} / 1 board used
               </span>
             )}
