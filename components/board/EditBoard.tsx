@@ -19,12 +19,14 @@ function EditBoard({ boardId }: { boardId: string }) {
   const [open, setOpen] = useState(false);
   const { board, updateBoard } = useBoardContext();
   const [newTitle, setNewTitle] = useState("");
+  const [newDesc, setNewDesc] = useState("");
   const [newColor, setNewColor] = useState("#008170");
 
   useEffect(() => {
     if (board) {
       setNewTitle(board.title);
       setNewColor(board.color ?? "#008170");
+      setNewDesc(board.description ?? "");
     }
   }, [board]);
 
@@ -39,6 +41,7 @@ function EditBoard({ boardId }: { boardId: string }) {
       await updateBoard(boardId, {
         title: newTitle.trim(),
         color: newColor,
+        description: newDesc,
       });
 
       setOpen(false);
@@ -75,6 +78,19 @@ function EditBoard({ boardId }: { boardId: string }) {
                 required
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="boardDescription" className="mb-4">
+                Board Description
+              </Label>
+              <Input
+                id="boardDescription"
+                value={newDesc}
+                onChange={(e) => setNewDesc(e.target.value)}
+                placeholder="Enter board description"
+              />
+            </div>
+
             <div>
               <Label className="mb-4">Board Color</Label>
               <ColorPanel value={newColor} onChange={setNewColor} />
