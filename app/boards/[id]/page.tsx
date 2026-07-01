@@ -49,7 +49,7 @@ function BoardPageContent() {
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 200, // ms hold before drag starts
-        tolerance: 8, // px finger can move during the delay
+        tolerance: 5, // px finger can move during the delay
       },
     }),
   );
@@ -175,7 +175,7 @@ function BoardPageContent() {
                     items={stage.tasks.map((t) => t.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="space-y-3">
+                    <div className="space-y-3 touch-none">
                       {stage.tasks.map((task, key) => (
                         <TaskCard key={key} task={task} />
                       ))}
