@@ -15,7 +15,13 @@ import { Label } from "../ui/label";
 import { MoreHorizontal } from "lucide-react";
 import { useBoardContext } from "@/lib/contexts/BoardContext";
 
-function EditBoard({ boardId }: { boardId: string }) {
+function EditBoard({
+  boardId,
+  className,
+}: {
+  boardId: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const { board, updateBoard } = useBoardContext();
   const [newTitle, setNewTitle] = useState("");
@@ -51,70 +57,73 @@ function EditBoard({ boardId }: { boardId: string }) {
   }
 
   return (
-    <div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm" className="cursor-pointer">
-            <MoreHorizontal />
-          </Button>
-        </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className={`cursor-pointer ${className ?? ""}`}
+        >
+          <MoreHorizontal />
+          <span className="sm:hidden ml-1">Edit</span>
+        </Button>
+      </DialogTrigger>
 
-        <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Board</DialogTitle>
-            <DialogDescription>Edit your board</DialogDescription>
-          </DialogHeader>
+      <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
+        <DialogHeader>
+          <DialogTitle>Edit Board</DialogTitle>
+          <DialogDescription>Edit your board</DialogDescription>
+        </DialogHeader>
 
-          <form className="space-y-4" onSubmit={handleUpdateBoard}>
-            <div className="space-y-2">
-              <Label htmlFor="boardTitle" className="mb-4">
-                Board Title
-              </Label>
-              <Input
-                id="boardTitle"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="Enter board title"
-                required
-                maxLength={50}
-              />
-            </div>
+        <form className="space-y-4" onSubmit={handleUpdateBoard}>
+          <div className="space-y-2">
+            <Label htmlFor="boardTitle" className="mb-4">
+              Board Title
+            </Label>
+            <Input
+              id="boardTitle"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="Enter board title"
+              required
+              maxLength={50}
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="boardDescription" className="mb-4">
-                Board Description
-              </Label>
-              <Input
-                id="boardDescription"
-                value={newDesc}
-                onChange={(e) => setNewDesc(e.target.value)}
-                placeholder="Enter board description"
-                maxLength={200}
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="boardDescription" className="mb-4">
+              Board Description
+            </Label>
+            <Input
+              id="boardDescription"
+              value={newDesc}
+              onChange={(e) => setNewDesc(e.target.value)}
+              placeholder="Enter board description"
+              maxLength={200}
+            />
+          </div>
 
-            <div>
-              <Label className="mb-4">Board Color</Label>
-              <ColorPanel value={newColor} onChange={setNewColor} />
-            </div>
+          <div>
+            <Label className="mb-4">Board Color</Label>
+            <ColorPanel value={newColor} onChange={setNewColor} />
+          </div>
 
-            <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant={"outline"}
-                className="cursor-pointer"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="cursor-pointer">
-                Edit Board
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+          <div className="flex justify-end space-x-2">
+            <Button
+              type="button"
+              variant={"outline"}
+              className="cursor-pointer"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" className="cursor-pointer">
+              Edit Board
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 

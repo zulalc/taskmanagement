@@ -17,9 +17,11 @@ import { useRouter } from "next/navigation";
 function DeleteBoard({
   boardId,
   buttonSize,
+  className,
 }: {
   boardId: string;
   buttonSize: "sm" | "xs";
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const { deleteBoard } = useBoard(boardId);
@@ -38,47 +40,46 @@ function DeleteBoard({
   }
 
   return (
-    <div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="outline"
+          size={buttonSize}
+          className={`cursor-pointer hover:bg-red-50 border-red-300 text-red-600 hover:text-red-700 ${className ?? ""}`}
+        >
+          <X className="w-4 h-4" />
+          <span className="sm:hidden ml-1">Delete</span>
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
+        <DialogHeader>
+          <DialogTitle>Delete Board</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete this board? This action cannot be
+            undone.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex justify-end space-x-2">
           <Button
-            variant="outline"
-            size={buttonSize}
-            className="cursor-pointer hover:bg-red-50 border-red-300 text-red-600 hover:text-red-700"
+            type="button"
+            variant={"outline"}
+            className="cursor-pointer hover:bg-gray-200"
+            onClick={() => setOpen(false)}
           >
-            <X />
+            Cancel
           </Button>
-        </DialogTrigger>
-
-        <DialogContent className="w-[95vw] max-w-106.25 mx-auto">
-          <DialogHeader>
-            <DialogTitle>Delete Board</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this board? This action cannot be
-              undone.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex justify-end space-x-2">
-            <Button
-              type="button"
-              variant={"outline"}
-              className="cursor-pointer hover:bg-gray-200"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="cursor-pointer bg-red-600 text-white hover:bg-red-700"
-              onClick={handleDeleteBoard}
-            >
-              Delete Board
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+          <Button
+            type="submit"
+            className="cursor-pointer bg-red-600 text-white hover:bg-red-700"
+            onClick={handleDeleteBoard}
+          >
+            Delete Board
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

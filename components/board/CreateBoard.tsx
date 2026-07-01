@@ -15,9 +15,11 @@ import { useBoardsContext } from "@/lib/contexts/BoardsContext";
 function CreateBoard({
   buttonVariant,
   canCreateBoard,
+  className,
 }: {
   buttonVariant?: "ghost" | "default";
   canCreateBoard: boolean;
+  className?: string;
 }) {
   const { createBoard } = useBoardsContext();
   const router = useRouter();
@@ -88,7 +90,7 @@ function CreateBoard({
         ) : (
           <Button
             size="sm"
-            className="cursor-pointer bg-brand-primary"
+            className={`cursor-pointer bg-brand-primary w-full sm:w-auto ${className ?? ""}`}
             onClick={handleTriggerClick}
           >
             <Plus className="w-4 h-4 mr-2" />

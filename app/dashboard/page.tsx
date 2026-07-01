@@ -165,12 +165,12 @@ function Page() {
             )}
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2">
-            <div className="flex items-center rounded-lg border p-1 gap-1 bg-white border-brand-card-bg">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            <div className="flex items-center rounded-lg border p-1 gap-1 bg-white border-brand-card-bg w-full sm:w-auto">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="icon"
-                className={`cursor-pointer h-7 w-7 ${viewMode === "grid" ? "bg-brand-primary" : ""}`}
+                className={`cursor-pointer h-7 w-7 flex-1 sm:flex-none ${viewMode === "grid" ? "bg-brand-primary" : ""}`}
                 onClick={() => setViewMode("grid")}
               >
                 <Grid2X2 className="w-4 h-4" />
@@ -178,15 +178,22 @@ function Page() {
               <Button
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="icon"
-                className={`cursor-pointer h-7 w-7 ${viewMode === "list" ? "bg-brand-primary" : ""}`}
+                className={`cursor-pointer h-7 w-7 flex-1 sm:flex-none ${viewMode === "list" ? "bg-brand-primary" : ""}`}
                 onClick={() => setViewMode("list")}
               >
                 <List className="w-4 h-4" />
               </Button>
             </div>
 
-            <FilterBoards filters={filters} setFilters={setFilters} />
-            <CreateBoard canCreateBoard={canCreateBoard} />
+            <FilterBoards
+              filters={filters}
+              setFilters={setFilters}
+              className="w-full sm:w-auto"
+            />
+            <CreateBoard
+              canCreateBoard={canCreateBoard}
+              className="w-full sm:w-auto"
+            />
           </div>
         </div>
 

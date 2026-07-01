@@ -29,7 +29,11 @@ type FilterTasksProps = {
   >;
 };
 
-function FilterTasks({ filters, setFilters }: FilterTasksProps) {
+function FilterTasks({
+  filters,
+  setFilters,
+  className,
+}: FilterTasksProps & { className?: string }) {
   const [open, setOpen] = useState(false);
 
   const filterCount =
@@ -61,7 +65,7 @@ function FilterTasks({ filters, setFilters }: FilterTasksProps) {
         <Button
           variant={"outline"}
           size={"sm"}
-          className={`cursor-pointer text-xs sm:text-sm ${filterCount > 0 ? "bg-[#BFEAE4] border-[#008170] text-[#005F54] hover:bg-[#A8E0D8]" : ""}`}
+          className={`cursor-pointer text-xs sm:text-sm ${className ?? ""} ${filterCount > 0 ? "bg-[#BFEAE4] border-[#008170] text-[#005F54] hover:bg-[#A8E0D8]" : ""}`}
           onClick={() => setOpen(true)}
         >
           <Filter className="w-3 h-3 sm:w-4 h:w-4 " /> Filter

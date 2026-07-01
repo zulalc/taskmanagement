@@ -119,10 +119,18 @@ function BoardPageContent() {
             name={board?.title || "Board"}
             color={board?.color || "#008170"}
           />
-          <div className="flex items-center gap-1">
-            <FilterTasks filters={filters} setFilters={setFilters} />
-            <EditBoard boardId={id} />
-            <DeleteBoard boardId={id} buttonSize="sm" />
+          <div className="flex items-center gap-1 w-full sm:w-auto">
+            <FilterTasks
+              filters={filters}
+              setFilters={setFilters}
+              className="flex-1 sm:flex-none"
+            />
+            <EditBoard boardId={id} className="flex-1 sm:flex-none" />
+            <DeleteBoard
+              boardId={id}
+              buttonSize="sm"
+              className="flex-1 sm:flex-none"
+            />
           </div>
         </div>
 

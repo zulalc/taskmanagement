@@ -33,7 +33,11 @@ export type FilterBoardsProps = {
   >;
 };
 
-function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
+function FilterBoards({
+  filters,
+  setFilters,
+  className,
+}: FilterBoardsProps & { className?: string }) {
   const [open, setOpen] = useState(false);
 
   const filterCount =
@@ -57,7 +61,7 @@ function FilterBoards({ filters, setFilters }: FilterBoardsProps) {
         <Button
           variant="outline"
           size="sm"
-          className={`cursor-pointer text-xs sm:text-sm ${
+          className={`cursor-pointer text-xs sm:text-sm ${className ?? ""} ${
             filterCount > 0
               ? "bg-brand-card-bg border-brand-primary text-brand-primary"
               : "border-brand-mint"
