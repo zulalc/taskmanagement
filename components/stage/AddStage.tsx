@@ -102,6 +102,7 @@ function AddStage({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter stage title"
               required
+              maxLength={50}
             />
           </div>
 

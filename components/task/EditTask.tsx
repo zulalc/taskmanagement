@@ -71,6 +71,7 @@ function EditTask({ task }: { task: Task }) {
               placeholder="Enter task title"
               defaultValue={task.title}
               required
+              maxLength={50}
             />
           </div>
 
@@ -81,6 +82,7 @@ function EditTask({ task }: { task: Task }) {
               placeholder="Enter task description"
               defaultValue={task.description || ""}
               rows={3}
+              maxLength={200}
             />
           </div>
 
@@ -90,6 +92,7 @@ function EditTask({ task }: { task: Task }) {
               name="assignee"
               placeholder="Enter task assignee"
               defaultValue={task.assignee || ""}
+              maxLength={50}
             />
           </div>
 

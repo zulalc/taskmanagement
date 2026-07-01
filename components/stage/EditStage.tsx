@@ -66,6 +66,7 @@ function EditStage({ stage, boardId }: { stage: Stage; boardId: string }) {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter stage title"
                 required
+                maxLength={50}
               />
             </div>
             <div className="flex items-center gap-2">

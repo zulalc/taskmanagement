@@ -113,6 +113,7 @@ function AddTask({
                 name="title"
                 placeholder="Enter task title"
                 required
+                maxLength={50}
               />
             </div>
             <div className="space-y-2">
@@ -122,6 +123,7 @@ function AddTask({
                 name="description"
                 placeholder="Enter task description"
                 rows={3}
+                maxLength={200}
               />
             </div>
             <div className="space-y-2">
@@ -130,6 +132,7 @@ function AddTask({
                 id="assignee"
                 name="assignee"
                 placeholder="Enter task assignee"
+                maxLength={50}
               />
             </div>
 

@@ -110,6 +110,7 @@ function CreateBoard({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter board title"
                 required
+                maxLength={50}
                 className="bg-brand-card-bg"
               />
             </div>
@@ -121,6 +122,7 @@ function CreateBoard({
                 placeholder="Enter board description"
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
+                maxLength={200}
                 className="border border-brand-card-bg"
               />
             </div>

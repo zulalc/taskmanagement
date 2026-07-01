@@ -76,6 +76,7 @@ function EditBoard({ boardId }: { boardId: string }) {
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="Enter board title"
                 required
+                maxLength={50}
               />
             </div>
 
@@ -88,6 +89,7 @@ function EditBoard({ boardId }: { boardId: string }) {
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
                 placeholder="Enter board description"
+                maxLength={200}
               />
             </div>
 
